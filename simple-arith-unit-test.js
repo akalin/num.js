@@ -388,4 +388,30 @@ describe('SNat', function() {
         .toThrow('division by zero');
     });
   });
+
+  describe('rsa', function() {
+    it('mult', function() {
+      for (var i in rsa) {
+        var f1 = new SNat(rsa[i][0]);
+        var f2 = new SNat(rsa[i][1]);
+        expect(f1.times(f2)).toEq(rsa[i][2]);
+      }
+    });
+
+    it('div', function() {
+      for (var i in rsa) {
+        var s = new SNat(rsa[i][2]);
+        expect(s.div(rsa[i][0])).toEq(rsa[i][1]);
+        expect(s.div(rsa[i][1])).toEq(rsa[i][0]);
+      }
+    });
+
+    it('mod', function() {
+      for (var i in rsa) {
+        var s = new SNat(rsa[i][2]);
+        expect(s.mod(rsa[i][0])).toEq(0);
+        expect(s.mod(rsa[i][1])).toEq(0);
+      }
+    });
+  });
 });
