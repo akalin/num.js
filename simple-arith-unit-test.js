@@ -107,4 +107,37 @@ describe('SNat', function() {
       expect(a.plus('000')).toEqual(a);
     });
   });
+
+  describe('minus', function() {
+    it('basic', function() {
+      expect((new SNat(31415926535)).minus('27182818289'))
+        .toHaveString('4233108246');
+    });
+
+    it('no zero-padding', function() {
+      var a = new SNat(100);
+      expect(a.minus(1)).toHaveArray([9, 9]);
+      expect(a.minus(100)).toHaveArray([]);
+    });
+
+    it('carry', function() {
+      expect((new SNat(1000000000)).minus(1)).toHaveString('999999999');
+    });
+
+    it('parse error', function() {
+      expect(function() { (new SNat('314159')).minus(''); })
+        .toThrow('cannot parse ');
+    });
+
+    it('degenerate', function() {
+      var a = new SNat(99999999999);
+      expect(a.minus(0)).toEqual(a);
+      expect(a.minus('000')).toEqual(a);
+    });
+
+    it('size error', function() {
+      expect(function() { (new SNat('10')).minus(11); })
+        .toThrow('tried to subtract larger number 11 from 10');
+    });
+  });
 });

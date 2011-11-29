@@ -91,19 +91,24 @@ SNat.new_ = function(a) {
   return n;
 };
 
+// If the given object is already an SNat, returns it.  Otherwise,
+// makes a new SNat out of it and returns that.
+SNat.cast_ = function(o) {
+  return (o instanceof SNat) ? o : new SNat(o);
+};
+
 // Returns the decimal string representation of the SNat.
 SNat.prototype.toString = function() {
   // Make a copy since reverse() mutates its calling array object.
   return (this.a_.length > 0) ? this.a_.slice(0).reverse().join('') : '0';
 };
 
+// In the functions below, arguments are converted to SNats when
+// necessary.
+
 // Returns the sum of this object and s.
-//
-// s is converted to an SNat if it is not already one.
 SNat.prototype.plus = function(s) {
-  if (!(s instanceof SNat)) {
-    s = new SNat(s);
-  }
+  s = this.constructor.cast_(s);
 
   // Adapted from Knuth 4.3.1 Algorithm A.
   var u = this.a_;
@@ -122,6 +127,39 @@ SNat.prototype.plus = function(s) {
     k = Math.floor(t / b);
   }
   w[n] = k;
+
+  return this.constructor.new_(w);
+};
+
+// Returns the difference of this object and s.  s must be less than
+// or equal to this.
+SNat.prototype.minus = function(s) {
+  s = this.constructor.cast_(s);
+
+  // Adapted from Knuth 4.3.1 Algorithm S.
+  var u = this.a_;
+  var v = s.a_;
+  var ul = u.length;
+  var vl = v.length;
+  var n = Math.max(ul, vl);
+  var w = new Array(n);
+  var b = this.b_;
+  var k = 0;
+  for (var j = 0; j < n; ++j) {
+    var uj = (j < ul) ? u[j] : 0;
+    var vj = (j < vl) ? v[j] : 0;
+    var t = uj - vj + k;
+    if (t < 0) {
+      w[j] = t + b;
+      k = -1;
+    } else {
+      w[j] = t;
+      k = 0;
+    }
+  }
+  if (k != 0) {
+    throw new Error('tried to subtract larger number ' + s + ' from ' + this);
+  }
 
   return this.constructor.new_(w);
 };
