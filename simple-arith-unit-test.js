@@ -328,4 +328,64 @@ describe('SNat', function() {
       expect(a.times('000')).toHaveArray([]);
     });
   });
+
+  describe('div', function() {
+    it('basic', function() {
+      var a = new SNat('853973422381478398615');
+      expect(a.div(27182818289)).toHaveString('31415926535');
+      expect(a.div(31415926535)).toHaveString('27182818289');
+    });
+
+    it('has remainder', function() {
+      var a = new SNat(100);
+      expect(a.div(26)).toHaveString('3');
+      expect(a.div(3)).toHaveString('33');
+    });
+
+    it('nines', function() {
+      var a = new SNat('99989999990001');
+      expect(a.div(9999)).toHaveString('9999999999');
+      expect(a.div(9999999999)).toHaveString('9999');
+    });
+
+    it('no zero-padding', function() {
+      expect((new SNat(55)).div(6)).toHaveArray([9]);
+    });
+
+    it('degenerate', function() {
+      expect((new SNat('100')).div(1000)).toHaveArray([]);
+    });
+
+    it('division by zero', function() {
+      expect(function() { (new SNat('100')).div('0'); })
+        .toThrow('division by zero');
+    });
+  });
+
+  describe('mod', function() {
+    it('basic', function() {
+      var a = new SNat(100);
+      expect(a.mod(26)).toHaveString('22');
+      expect(a.mod(3)).toHaveString('1');
+    });
+
+    it('no remainder', function() {
+      var a = new SNat('853973422381478398615');
+      expect(a.mod(27182818289)).toHaveString('0');
+      expect(a.mod(31415926535)).toHaveString('0');
+    });
+
+    it('no zero-padding', function() {
+      expect((new SNat(100)).mod(3)).toHaveArray([1]);
+    });
+
+    it('degenerate', function() {
+      expect((new SNat('100')).mod(1000)).toHaveString('100');
+    });
+
+    it('division by zero', function() {
+      expect(function() { (new SNat('100')).mod('0'); })
+        .toThrow('division by zero');
+    });
+  });
 });

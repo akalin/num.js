@@ -118,6 +118,61 @@ SNat.prototype.cmp_ = function(s) {
   return 0;
 };
 
+// Returns a dictionary with the quotient ('q') and remainder ('r')
+// of this object and s, which must be greater than 0.
+SNat.prototype.divMod_ = function(s) {
+  s = this.constructor.cast_(s);
+
+  if (s.isZero()) {
+    throw new Error('division by zero');
+  }
+
+  // Degenerate case.
+  if (this.lt(s)) {
+    return {
+      q: new SNat(0),
+      r: new SNat(this)
+    };
+  }
+
+  // Adapted (loosely) from Knuth 4.3.1 Algorithm D; this is
+  // actually closer to pen-and-paper long division.
+  var u = this.a_;
+  var v = s.a_;
+  var n = v.length;
+  var m = u.length - n;
+  var q = new Array(m+1);
+  // rem is the portion of u that we're currently dividing by v; at
+  // the end of the loop below it becomes the actual remainder.
+  var rem = this.constructor.new_(u.slice(m+1));
+  var b = this.b_;
+  for (var j = m; j >= 0; --j) {
+    // Bring down the next digit.  Passing it through new_()
+    // guarantees its trimmed of trailing zeroes.
+    {
+      var r = rem.a_;
+      r.unshift(u[j]);
+      rem = this.constructor.new_(r);
+    }
+    // Since our base is so small, we can get away with finding q[j]
+    // by brute force instead of the somewhat tricky method in
+    // Algorithm D.
+    q[j] = 0;
+    var vqj = new SNat(0);
+    while (q[j] < b-1) {
+      var t = vqj.plus(s);
+      if (t.gt(rem)) {
+        break;
+      }
+      ++q[j];
+      vqj = t;
+    }
+    rem = rem.minus(vqj);
+  }
+
+  return { q: this.constructor.new_(q), r: rem };
+};
+
 // Returns the decimal string representation of the SNat.
 SNat.prototype.toString = function() {
   // Make a copy since reverse() mutates its calling array object.
@@ -250,4 +305,16 @@ SNat.prototype.times = function(s) {
   }
 
   return this.constructor.new_(w);
+};
+
+// Returns the quotient of this object and s, which must be greater
+// than 0.
+SNat.prototype.div = function(s) {
+  return this.divMod_(s).q;
+};
+
+// Returns the modulo (remainder after division) of this object and
+// s, which must be greater than 0.
+SNat.prototype.mod = function(s) {
+  return this.divMod_(s).r;
 };
