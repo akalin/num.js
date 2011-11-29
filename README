@@ -1,0 +1,17 @@
+num.js will be a Javascript library that will implement various
+algorithms in number theory and arithmetic.  It will be meant to be:
+
+- easy to understand;
+- asymptotically fast.
+
+It will not be:
+
+- meant for cryptographic applications;
+- as fast as a *real* number theory or arithmetic library.
+
+Its planned feature list is:
+
+- arbitrary-precision arithmetic;
+- fast primality testing;
+- support for Web Workers.
+
