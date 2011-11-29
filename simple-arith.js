@@ -16,6 +16,21 @@ if (!Array.prototype.map) {
   };
 }
 
+// Workaround for IE <9 not supporting Object.create.  Taken from
+// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/create/
+// .
+if (!Object.create) {
+  Object.create = function (o) {
+    if (arguments.length > 1) {
+      throw new Error(
+        'Object.create implementation only accepts the first parameter.');
+    }
+    function F() {}
+    F.prototype = o;
+    return new F();
+  };
+}
+
 // SNat is a simple arbitrary-precision natural number class that uses
 // an internal representation of an array of decimal digits.
 
@@ -42,15 +57,13 @@ if (!Array.prototype.map) {
 // n = new SNat({});    // error
 function SNat(o) {
   if (o == undefined) {
-    this.a_ = [];
-    return;
+    return SNat.new_([]);
   }
 
   // If o is another SNat, we can simply copy the underlying array
   // instead of stringifying/destringifying.
   if (o instanceof SNat) {
-    this.a_ = o.a_.slice(0);
-    return;
+    return SNat.new_(o.a_.slice(0));
   }
 
   function parseDigit(d) {
@@ -60,11 +73,55 @@ function SNat(o) {
   if (!s.match(/^[0-9]+$/)) {
     throw new Error('cannot parse ' + s);
   }
-  this.a_ = s.replace(/^0*/, '').split('').reverse().map(parseDigit);
+  return SNat.new_(s.split('').reverse().map(parseDigit));
 }
+
+// Our base.
+SNat.prototype.b_ = 10;
+
+// Private constructor.  Returns an SNat object with the given array
+// of decimal digits, which may include trailing zeroes.
+SNat.new_ = function(a) {
+  // Trim trailing zeroes.
+  while (a.length > 0 && a[a.length-1] == 0) {
+    --a.length;
+  }
+  var n = Object.create(SNat.prototype);
+  n.a_ = a;
+  return n;
+};
 
 // Returns the decimal string representation of the SNat.
 SNat.prototype.toString = function() {
   // Make a copy since reverse() mutates its calling array object.
   return (this.a_.length > 0) ? this.a_.slice(0).reverse().join('') : '0';
+};
+
+// Returns the sum of this object and s.
+//
+// s is converted to an SNat if it is not already one.
+SNat.prototype.plus = function(s) {
+  if (!(s instanceof SNat)) {
+    s = new SNat(s);
+  }
+
+  // Adapted from Knuth 4.3.1 Algorithm A.
+  var u = this.a_;
+  var v = s.a_;
+  var ul = u.length;
+  var vl = v.length;
+  var n = Math.max(ul, vl);
+  var w = new Array(n+1);
+  var b = this.b_;
+  var k = 0;
+  for (var j = 0; j < n; ++j) {
+    var uj = (j < ul) ? u[j] : 0;
+    var vj = (j < vl) ? v[j] : 0;
+    var t = uj + vj + k;
+    w[j] = t % b;
+    k = Math.floor(t / b);
+  }
+  w[n] = k;
+
+  return this.constructor.new_(w);
 };

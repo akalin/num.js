@@ -81,4 +81,30 @@ describe('SNat', function() {
       expect(new SNat('000271828182800')).toHaveString('271828182800');
     });
   });
+
+  describe('plus', function() {
+    it('basic', function() {
+      expect((new SNat(31415926535)).plus('27182818289'))
+        .toHaveString('58598744824');
+    });
+
+    it('no zero-padding', function() {
+      expect((new SNat(98)).plus(1)).toHaveArray([9, 9]);
+    });
+
+    it('carry', function() {
+      expect((new SNat(99999999999)).plus(1)).toHaveString('100000000000');
+    });
+
+    it('parse error', function() {
+      expect(function() { (new SNat('314159')).plus(''); })
+        .toThrow('cannot parse ');
+    });
+
+    it('degenerate', function() {
+      var a = new SNat(99999999999);
+      expect(a.plus(0)).toEqual(a);
+      expect(a.plus('000')).toEqual(a);
+    });
+  });
 });
