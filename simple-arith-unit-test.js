@@ -23,6 +23,32 @@ describe('SNat', function() {
       // equal to the given expected string.
       toHaveString: function(expected) {
         return this.actual.toString() == expected;
+      },
+
+      // Forwarders to SNat comparison operators.
+
+      toEq: function(expected) {
+        return this.actual.eq(expected);
+      },
+
+      toNe: function(expected) {
+        return this.actual.ne(expected);
+      },
+
+      toLt: function(expected) {
+        return this.actual.lt(expected);
+      },
+
+      toLe: function(expected) {
+        return this.actual.le(expected);
+      },
+
+      toGt: function(expected) {
+        return this.actual.gt(expected);
+      },
+
+      toGe: function(expected) {
+        return this.actual.ge(expected);
       }
     });
   });
@@ -79,6 +105,137 @@ describe('SNat', function() {
 
     it('zero-padded', function() {
       expect(new SNat('000271828182800')).toHaveString('271828182800');
+    });
+  });
+
+  describe('comparisons', function() {
+    var a = new SNat(31415926535);
+    var b = new SNat(2718281828);
+    var c = new SNat(3141592653);
+
+    it('eq', function() {
+      expect(a).toEq(a);
+      expect(a).not.toEq(b);
+      expect(a).not.toEq(c);
+
+      expect(b).not.toEq(a);
+      expect(b).toEq(b);
+      expect(b).not.toEq(c);
+
+      expect(c).not.toEq(a);
+      expect(c).not.toEq(b);
+      expect(c).toEq(c);
+    });
+
+    it('ne', function() {
+      expect(a).not.toNe(a);
+      expect(a).toNe(b);
+      expect(a).toNe(c);
+
+      expect(b).toNe(a);
+      expect(b).not.toNe(b);
+      expect(b).toNe(c);
+
+      expect(c).toNe(a);
+      expect(c).toNe(b);
+      expect(c).not.toNe(c);
+    });
+
+    it('le', function() {
+      expect(a).toLe(a);
+      expect(a).not.toLe(b);
+      expect(a).not.toLe(c);
+
+      expect(b).toLe(a);
+      expect(b).toLe(b);
+      expect(b).toLe(c);
+
+      expect(c).toLe(a);
+      expect(c).not.toLe(b);
+      expect(c).toLe(c);
+    });
+
+    it('lt', function() {
+      expect(a).not.toLt(a);
+      expect(a).not.toLt(b);
+      expect(a).not.toLt(c);
+
+      expect(b).toLt(a);
+      expect(b).not.toLt(b);
+      expect(b).toLt(c);
+
+      expect(c).toLt(a);
+      expect(c).not.toLt(b);
+      expect(c).not.toLt(c);
+    });
+
+    it('ge', function() {
+      expect(a).toGe(a);
+      expect(a).toGe(b);
+      expect(a).toGe(c);
+
+      expect(b).not.toGe(a);
+      expect(b).toGe(b);
+      expect(b).not.toGe(c);
+
+      expect(c).not.toGe(a);
+      expect(c).toGe(b);
+      expect(c).toGe(c);
+    });
+
+    it('gt', function() {
+      expect(a).not.toGt(a);
+      expect(a).toGt(b);
+      expect(a).toGt(c);
+
+      expect(b).not.toGt(a);
+      expect(b).not.toGt(b);
+      expect(b).not.toGt(c);
+
+      expect(c).not.toGt(a);
+      expect(c).toGt(b);
+      expect(c).not.toGt(c);
+    });
+
+    it('conversions', function() {
+      var s = a.toString();
+      var n = 314159;
+      expect(a).toEq(s);
+      expect(a).not.toEq(n);
+
+      expect(a).not.toNe(s);
+      expect(a).toNe(n);
+
+      expect(a).toLe(s);
+      expect(a).not.toLe(n);
+
+      expect(a).not.toLt(s);
+      expect(a).not.toLt(n);
+
+      expect(a).toGe(s);
+      expect(a).toGe(n);
+
+      expect(a).not.toGt(s);
+      expect(a).toGt(n);
+    });
+
+    it('zero', function() {
+      var zero = new SNat(0);
+      var one = new SNat(1);
+
+      expect(zero.isZero()).toBeTruthy();
+      expect(zero.isNonZero()).toBeFalsy();
+
+      expect(one.isZero()).toBeFalsy();
+      expect(one.isNonZero()).toBeTruthy();
+    });
+
+    it('even/odd', function() {
+      for (var i = 0; i < 101; ++i) {
+        var n = new SNat(i);
+        expect(n.isEven()).toEqual(i % 2 == 0);
+        expect(n.isOdd()).toEqual(i % 2 != 0);
+      }
     });
   });
 

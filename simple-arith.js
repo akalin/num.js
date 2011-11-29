@@ -97,14 +97,74 @@ SNat.cast_ = function(o) {
   return (o instanceof SNat) ? o : new SNat(o);
 };
 
+// In the functions below, arguments are converted to SNats when
+// necessary.
+
+// Returns a number less than, equal to, or greater than 0 according
+// as this is less than, equal to, or greater than s.
+SNat.prototype.cmp_ = function(s) {
+  s = this.constructor.cast_(s);
+
+  var u = this.a_;
+  var v = s.a_;
+  var ul = u.length;
+  var vl = v.length;
+  if (ul < vl) return -1;
+  if (ul > vl) return +1;
+  for (var j = ul - 1; j >= 0; --j) {
+    if (u[j] < v[j]) return -1;
+    if (u[j] > v[j]) return +1;
+  }
+  return 0;
+};
+
 // Returns the decimal string representation of the SNat.
 SNat.prototype.toString = function() {
   // Make a copy since reverse() mutates its calling array object.
   return (this.a_.length > 0) ? this.a_.slice(0).reverse().join('') : '0';
 };
 
-// In the functions below, arguments are converted to SNats when
-// necessary.
+// Comparison operators.
+
+SNat.prototype.eq = function(s) {
+  return this.cmp_(s) == 0;
+};
+
+SNat.prototype.ne = function(s) {
+  return this.cmp_(s) != 0;
+};
+
+SNat.prototype.lt = function(s) {
+  return this.cmp_(s) < 0;
+};
+
+SNat.prototype.le = function(s) {
+  return this.cmp_(s) <= 0;
+};
+
+SNat.prototype.gt = function(s) {
+  return this.cmp_(s) > 0;
+};
+
+SNat.prototype.ge = function(s) {
+  return this.cmp_(s) >= 0;
+};
+
+SNat.prototype.isZero = function() {
+  return this.a_.length == 0;
+}
+
+SNat.prototype.isNonZero = function() {
+  return this.a_.length != 0;
+}
+
+SNat.prototype.isEven = function() {
+  return this.isZero() || (this.a_[0] % 2 == 0);
+}
+
+SNat.prototype.isOdd = function() {
+  return this.isNonZero() && (this.a_[0] % 2 != 0);
+}
 
 // Returns the sum of this object and s.
 SNat.prototype.plus = function(s) {
