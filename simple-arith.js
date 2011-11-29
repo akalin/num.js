@@ -163,3 +163,31 @@ SNat.prototype.minus = function(s) {
 
   return this.constructor.new_(w);
 };
+
+// Returns the product of this object and s.
+SNat.prototype.times = function(s) {
+  s = this.constructor.cast_(s);
+
+  // Adapted from Knuth 4.3.1 Algorithm M.
+  var u = this.a_;
+  var v = s.a_;
+  var m = u.length;
+  var n = v.length;
+  var w = new Array(m+n);
+  for (var i = 0; i < m+n; ++i) {
+    w[i] = 0;
+  }
+  var b = this.b_;
+  var k = 0;
+  for (var j = 0; j < n; ++j) {
+    var k = 0;
+    for (var i = 0; i < m; ++i) {
+      var t = u[i] * v[j] + w[i+j] + k;
+      w[i+j] = t % b;
+      k = Math.floor(t / b);
+    }
+    w[j+m] = k;
+  }
+
+  return this.constructor.new_(w);
+};

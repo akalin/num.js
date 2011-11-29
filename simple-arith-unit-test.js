@@ -140,4 +140,35 @@ describe('SNat', function() {
         .toThrow('tried to subtract larger number 11 from 10');
     });
   });
+
+  describe('times', function() {
+    it('basic', function() {
+      expect((new SNat(31415926535)).times('27182818289'))
+        .toHaveString('853973422381478398615');
+    });
+
+    it('nines', function() {
+      expect((new SNat(9999)).times('9999999999'))
+        .toHaveString('99989999990001');
+    });
+
+    it('no zero-padding', function() {
+      expect((new SNat(100)).times(0)).toHaveArray([]);
+    });
+
+    it('carry', function() {
+      expect((new SNat(9999)).times(9999)).toHaveString('99980001');
+    });
+
+    it('parse error', function() {
+      expect(function() { (new SNat('27182')).times(''); })
+        .toThrow('cannot parse ');
+    });
+
+    it('degenerate', function() {
+      var a = new SNat(100);
+      expect(a.times(0)).toHaveArray([]);
+      expect(a.times('000')).toHaveArray([]);
+    });
+  });
 });
