@@ -495,6 +495,82 @@ describe('SNat', function() {
     });
   });
 
+  describe('random', function() {
+    function alwaysZero() { return 0.0; }
+    function alwaysOneHalf() { return 0.5; }
+    function alwaysOneMinusEpsilon() { return 1.0 - 2e-16; }
+    function alwaysOne() { return 1.0; }
+
+    var googol = (new SNat(10)).pow(100);
+
+    it('alwaysZero', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysZero);
+      }
+      expect(random(1, 100)).toEq('1');
+      expect(random(2, 1000)).toEq('2');
+      expect(random(3, 10000)).toEq('3');
+      expect(random(4, googol)).toEq('4');
+    });
+
+    it('alwaysOneHalf', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysOneHalf);
+      }
+      expect(random(5, 100)).toEq('52');
+      expect(random(6, 1000)).toEq('503');
+      expect(random(7, 10000)).toEq('5003');
+      var googolLB = googol.div(2);
+      var googolUB = googolLB.plus((new SNat(10)).pow(91));
+      expect(random(8, googol)).toGt(googolLB);
+      expect(random(9, googol)).toLt(googolUB);
+    });
+
+    it('alwaysOneMinusEpsilon', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysOneMinusEpsilon);
+      }
+      expect(random(10, 100)).toEq('99');
+      expect(random(11, 1000)).toEq('999');
+      expect(random(12, 10000)).toEq('9999');
+      expect(random(13, googol)).toEq(googol.minus(1));
+    });
+
+    it('alwaysOne', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysOne);
+      }
+      expect(random(14, 100)).toEq('14');
+      expect(random(15, 1000)).toEq('15');
+      expect(random(16, 10000)).toEq('16');
+      expect(random(17, googol)).toEq('17');
+    });
+
+    it('default', function() {
+      var a = SNat.random(18, 100);
+      var b = SNat.random(19, 1000);
+      var c = SNat.random(20, 10000);
+      var d = SNat.random(21, googol);
+      expect(a.ge(18)).toBeTruthy();
+      expect(a.lt(100)).toBeTruthy();
+      expect(b.ge(19)).toBeTruthy();
+      expect(b.lt(1000)).toBeTruthy();
+      expect(c.ge(20)).toBeTruthy();
+      expect(c.lt(10000)).toBeTruthy();
+      expect(d.ge(21)).toBeTruthy();
+      expect(d.lt(googol)).toBeTruthy();
+    });
+
+    it('error', function() {
+      expect(function() { SNat.random(0, 0, alwaysZero) })
+        .toThrow('invalid range [0, 0)');
+      expect(function() { SNat.random(5, 5, alwaysZero) })
+        .toThrow('invalid range [5, 5)');
+      expect(function() { SNat.random(10, 5, alwaysZero) })
+        .toThrow('invalid range [10, 5)');
+    });
+  });
+
   describe('rsa', function() {
     it('mult', function() {
       for (var i in rsa) {

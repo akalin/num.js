@@ -95,6 +95,37 @@ SNat.tryCast = function(o) {
   }
 };
 
+// Returns a random SNat in [min, max).  min should be less than max.
+// rng should be a function that returns a random double in [0, 1)
+// with at least 32 bits of randomness.  If rng is not specified,
+// Math.random is used.
+SNat.random = function(min, max, rng) {
+  min = SNat.cast(min);
+  max = SNat.cast(max);
+  rng = rng || Math.random;
+
+  if (min.ge(max)) {
+    throw 'invalid range [' + min + ', ' + max + ')';;
+  }
+
+  var delta = max.minus(min);
+
+  // Generate a random rational number p/q in [0, 1) with enough
+  // precision to map to [0, delta) when multiplied by delta, i.e. q
+  // >= delta.  We do this by essentially generating digits of a 2^32
+  // base number from rng.
+  var uint32Base = ((1 << 31) >>> 0) * 2;
+  var p = new SNat(0);
+  var q = new SNat(1);
+  while (q.lt(delta)) {
+    var n = (rng() * uint32Base) >>> 0;
+    p = p.times(uint32Base).plus(n);
+    q = q.times(uint32Base);
+  }
+
+  return min.plus(delta.times(p).div(q));
+};
+
 // Our base.
 SNat.prototype.b_ = 10;
 
