@@ -406,6 +406,44 @@ describe('SNat', function() {
     });
   });
 
+  describe('pow', function() {
+    it('zero', function() {
+      var a = new SNat(0);
+      expect(a.pow(0)).toHaveString('1');
+      expect(a.pow(1)).toHaveString('0');
+      expect(a.pow(2)).toHaveString('0');
+      expect(a.pow('314159265358979')).toHaveString('0');
+    });
+
+    it('one', function() {
+      var a = new SNat(1);
+      expect(a.pow(0)).toHaveString('1');
+      expect(a.pow(1)).toHaveString('1');
+      expect(a.pow(2)).toHaveString('1');
+      expect(a.pow('314159265358979')).toHaveString('1');
+    });
+
+    it('two', function() {
+      var a = new SNat(2);
+      expect(a.pow(0)).toHaveString('1');
+      expect(a.pow(1)).toHaveString('2');
+      expect(a.pow(2)).toHaveString('4');
+      expect(a.pow(10)).toHaveString('1024');
+      expect(a.pow(32)).toHaveString('4294967296');
+      expect(a.pow(64)).toHaveString('18446744073709551616');
+    });
+
+    it('large', function() {
+      var a = new SNat(387420489);
+      expect(a.pow(0)).toHaveString('1');
+      expect(a.pow(1)).toHaveString('387420489');
+      expect(a.pow(2)).toHaveString('150094635296999121');
+      expect(a.pow(10))
+        .toHaveString('761773480458663923392897277206155617' +
+                      '50424801402395196724001565744957137343033038019601');
+    });
+  });
+
   describe('rsa', function() {
     it('mult', function() {
       for (var i in rsa) {
