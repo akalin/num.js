@@ -373,5 +373,17 @@ SNat.prototype.mod = function(s) {
 // Returns this object raised to the sth power.  If this object and s
 // are both 0, returns 1.
 SNat.prototype.pow = function(s) {
-  return this.genPow_(s, function(x, y) { return x.times(y); }, new SNat(1));
+  var op = function(x, y) { return x.times(y); };
+  var id = new SNat(1);
+  return this.genPow_(s, op, id);
+};
+
+// Returns this object raised to the sth power modulo m, which must be
+// greater than 0.
+SNat.prototype.powMod = function(s, m) {
+  m = this.constructor.cast(m);
+
+  var op = function(x, y) { return x.times(y).mod(m); };
+  var id = new SNat(m.gt(1) ? 1 : 0);
+  return this.genPow_(s, op, id);
 };

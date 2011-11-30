@@ -444,6 +444,57 @@ describe('SNat', function() {
     });
   });
 
+  describe('powMod', function() {
+    it('zero', function() {
+      var a = new SNat(0);
+      expect(a.powMod(0, 1)).toHaveString('0');
+      expect(a.powMod(0, 2)).toHaveString('1');
+      expect(a.powMod(0, 100)).toHaveString('1');
+      expect(a.powMod(1, 1)).toHaveString('0');
+      expect(a.powMod(1, 2)).toHaveString('0');
+      expect(a.powMod(1, 100)).toHaveString('0');
+      expect(a.powMod(2, 1)).toHaveString('0');
+      expect(a.powMod(2, 2)).toHaveString('0');
+      expect(a.powMod(2, 100)).toHaveString('0');
+      expect(a.powMod('314159265358979', 100)).toHaveString('0');
+    });
+
+    it('one', function() {
+      var a = new SNat(1);
+      expect(a.powMod(0, 1)).toHaveString('0');
+      expect(a.powMod(0, 2)).toHaveString('1');
+      expect(a.powMod(0, 100)).toHaveString('1');
+      expect(a.powMod(1, 1)).toHaveString('0');
+      expect(a.powMod(1, 2)).toHaveString('1');
+      expect(a.powMod(1, 100)).toHaveString('1');
+      expect(a.powMod(2, 1)).toHaveString('0');
+      expect(a.powMod(2, 2)).toHaveString('1');
+      expect(a.powMod(2, 100)).toHaveString('1');
+      expect(a.powMod('314159265358979', 100)).toHaveString('1');
+    });
+
+    it('two', function() {
+      var a = new SNat(2);
+      expect(a.powMod(0, 3)).toHaveString('1');
+      expect(a.powMod(1, 3)).toHaveString('2');
+      expect(a.powMod(2, 3)).toHaveString('1');
+      expect(a.powMod(10, 3)).toHaveString('1');
+      expect(a.powMod(10, 5)).toHaveString('4');
+      expect(a.powMod(32, 3)).toHaveString('1');
+      expect(a.powMod(32, 5)).toHaveString('1');
+      expect(a.powMod(64, 3)).toHaveString('1');
+      expect(a.powMod(64, 5)).toHaveString('1');
+    });
+
+    it('large', function() {
+      var a = new SNat(387420489);
+      expect(a.powMod(0, 1)).toHaveString('0');
+      expect(a.powMod(1, 100)).toHaveString('89');
+      expect(a.powMod(2, 53)).toHaveString('46');
+      expect(a.powMod(10, 101)).toHaveString('95');
+    });
+  });
+
   describe('rsa', function() {
     it('mult', function() {
       for (var i in rsa) {
