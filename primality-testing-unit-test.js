@@ -145,4 +145,11 @@ describe('primality testing', function() {
       expect(hasArtjuhovWitness(1105, 17)).toBeTruthy();
     });
   });
+
+  describe('isProbablePrime', function() {
+    it('small primes', function() {
+      expect(smallPrimes.filter(function(n) { return isProbablePrime(n); }))
+        .toEqual(smallPrimes);
+    });
+  });
 });

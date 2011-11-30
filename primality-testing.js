@@ -126,3 +126,38 @@ function testCompositenessByArtjuhov(n, a) {
 function hasArtjuhovWitness(n, a) {
   return testCompositenessByArtjuhov(n, a).isCompositeByArtjuhov;
 }
+
+// Returns true if n is probably prime, based on sampling the given
+// number of possible witnesses and testing them against n.  If false
+// is returned, then n is definitely composite.
+//
+// By default, uses the Artjuhov test for witnesses with 20 samples
+// and Math.random for the random number generator.  This gives an
+// error bound of 4^-20 if true is returned.
+function isProbablePrime(n, hasWitness, numSamples, rng) {
+  n = SNat.cast(n);
+  hasWitness = hasWitness || hasArtjuhovWitness;
+  rng = rng || Math.random;
+  numSamples = numSamples || 20;
+
+  if (n.le(1)) {
+    return false;
+  }
+
+  if (n.le(3)) {
+    return true;
+  }
+
+  if (n.isEven()) {
+    return false;
+  }
+
+  for (var i = 0; i < numSamples; ++i) {
+    var a = SNat.random(2, n.minus(2), rng);
+    if (hasWitness(n, a)) {
+      return false;
+    }
+  }
+
+  return true;
+}
