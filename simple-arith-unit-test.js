@@ -91,6 +91,23 @@ describe('SNat', function() {
     });
   });
 
+  describe('cast', function() {
+    it('from number', function() {
+      expect(SNat.cast(31415926535))
+        .toHaveArray([5, 3, 5, 6, 2, 9, 5, 1, 4, 1, 3]);
+    });
+
+    it('from string', function() {
+      expect(SNat.cast('31415926535'))
+        .toHaveArray([5, 3, 5, 6, 2, 9, 5, 1, 4, 1, 3]);
+    });
+
+    it('from SNat', function() {
+      var s = new SNat('31415926535');
+      expect(SNat.cast(s)).toEqual(s);
+    });
+  });
+
   describe('toString', function() {
     it('basic', function() {
       expect(new SNat(31415926535)).toHaveString('31415926535');

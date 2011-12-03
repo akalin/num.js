@@ -76,6 +76,12 @@ function SNat(o) {
   return SNat.new_(s.split('').reverse().map(parseDigit));
 }
 
+// If the given object is already an SNat, returns it.  Otherwise,
+// makes a new SNat out of it and returns that.
+SNat.cast = function(o) {
+  return (o instanceof SNat) ? o : new SNat(o);
+};
+
 // Our base.
 SNat.prototype.b_ = 10;
 
@@ -91,19 +97,13 @@ SNat.new_ = function(a) {
   return n;
 };
 
-// If the given object is already an SNat, returns it.  Otherwise,
-// makes a new SNat out of it and returns that.
-SNat.cast_ = function(o) {
-  return (o instanceof SNat) ? o : new SNat(o);
-};
-
 // In the functions below, arguments are converted to SNats when
 // necessary.
 
 // Returns a number less than, equal to, or greater than 0 according
 // as this is less than, equal to, or greater than s.
 SNat.prototype.cmp_ = function(s) {
-  s = this.constructor.cast_(s);
+  s = this.constructor.cast(s);
 
   var u = this.a_;
   var v = s.a_;
@@ -121,7 +121,7 @@ SNat.prototype.cmp_ = function(s) {
 // Returns a dictionary with the quotient ('q') and remainder ('r')
 // of this object and s, which must be greater than 0.
 SNat.prototype.divMod_ = function(s) {
-  s = this.constructor.cast_(s);
+  s = this.constructor.cast(s);
 
   if (s.isZero()) {
     throw new Error('division by zero');
@@ -223,7 +223,7 @@ SNat.prototype.isOdd = function() {
 
 // Returns the sum of this object and s.
 SNat.prototype.plus = function(s) {
-  s = this.constructor.cast_(s);
+  s = this.constructor.cast(s);
 
   // Adapted from Knuth 4.3.1 Algorithm A.
   var u = this.a_;
@@ -249,7 +249,7 @@ SNat.prototype.plus = function(s) {
 // Returns the difference of this object and s.  s must be less than
 // or equal to this.
 SNat.prototype.minus = function(s) {
-  s = this.constructor.cast_(s);
+  s = this.constructor.cast(s);
 
   // Adapted from Knuth 4.3.1 Algorithm S.
   var u = this.a_;
@@ -281,7 +281,7 @@ SNat.prototype.minus = function(s) {
 
 // Returns the product of this object and s.
 SNat.prototype.times = function(s) {
-  s = this.constructor.cast_(s);
+  s = this.constructor.cast(s);
 
   // Adapted from Knuth 4.3.1 Algorithm M.
   var u = this.a_;
