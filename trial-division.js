@@ -51,3 +51,30 @@ function makeNaiveDivisorGenerator() {
     return d;
   };
 }
+
+// Returns a generator that generates primes up to 7, then odd numbers
+// up to floor(sqrt(n)), using a mod-30 wheel to eliminate odd numbers
+// that are known composite (roughly half).
+function makeMod30WheelDivisorGenerator() {
+  var start = [2, 3, 5, 7].map(SNat.cast);
+  var si = 1;
+  var sl = start.length;
+  var wheel = [4, 2, 4, 2, 4, 6, 2, 6];
+  var wi = 0;
+  var wl = wheel.length;
+  var next = start[0];
+  return function(n) {
+    var d = next;
+    if (d.times(d).gt(n)) {
+      return null;
+    }
+    if (si < sl) {
+      next = start[si];
+      ++si;
+    } else {
+      next = next.plus(wheel[wi]);
+      wi = (wi + 1) % wl;
+    }
+    return d;
+  };
+}

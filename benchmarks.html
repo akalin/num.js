@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>num.js Benchmark Runner</title>
+  <script type="text/javascript" src="benchmark.js/benchmark.js"></script>
+
+  <!-- include source files here... -->
+  <script type="text/javascript" src="simple-arith.js"></script>
+  <script type="text/javascript" src="trial-division.js"></script>
+
+  <!-- include benchmark files here... -->
+  <script type="text/javascript" src="trial-division-benchmark.js"></script>
+
+</head>
+<body>
+<pre id="output">
+</pre>
+<script type="text/javascript">
+'use strict';
+
+var outputPre = document.getElementById('output');
+var outputFn = function(str) {
+  outputPre.textContent += str + '\n';
+};
+
+var testPrimes = ['100003', '10000019', '1000000007'];
+
+var suites = testPrimes.map(function(o) {
+  return makeTrialDivideSuite(o, outputFn);
+});
+
+var runSuites = function(i) {
+  if (i >= suites.length) {
+    return;
+  }
+  var suite = suites[i];
+  suite.run({ 'async': true });
+  suite.on('complete', function() {
+    runSuites(i + 1);
+  });
+};
+
+runSuites(0);
+</script>
+</body>
+</html>
