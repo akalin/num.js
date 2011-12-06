@@ -638,4 +638,190 @@ describe('SNat', function() {
       }
     });
   });
+
+  describe('floorRoot', function() {
+    it('sqrt', function() {
+      expect((new SNat(0)).floorRoot(2)).toEq(0);
+
+      expect((new SNat(1)).floorRoot(2)).toEq(1);
+
+      expect((new SNat(2)).floorRoot(2)).toEq(1);
+
+      expect((new SNat(3)).floorRoot(2)).toEq(1);
+      expect((new SNat(4)).floorRoot(2)).toEq(2);
+      expect((new SNat(5)).floorRoot(2)).toEq(2);
+
+      expect((new SNat(8)).floorRoot(2)).toEq(2);
+      expect((new SNat(9)).floorRoot(2)).toEq(3);
+      expect((new SNat(10)).floorRoot(2)).toEq(3);
+
+      expect((new SNat(15)).floorRoot(2)).toEq(3);
+      expect((new SNat(16)).floorRoot(2)).toEq(4);
+      expect((new SNat(17)).floorRoot(2)).toEq(4);
+
+      expect((new SNat(24)).floorRoot(2)).toEq(4);
+      expect((new SNat(25)).floorRoot(2)).toEq(5);
+      expect((new SNat(26)).floorRoot(2)).toEq(5);
+
+      expect((new SNat(35)).floorRoot(2)).toEq(5);
+      expect((new SNat(36)).floorRoot(2)).toEq(6);
+      expect((new SNat(37)).floorRoot(2)).toEq(6);
+    });
+
+    it('cube root', function() {
+      expect((new SNat(0)).floorRoot(3)).toEq(0);
+      for (var i = 1; i < 7; ++i) {
+        expect((new SNat(i)).floorRoot(3)).toEq(1);
+      }
+
+      expect((new SNat(7)).floorRoot(3)).toEq(1);
+      expect((new SNat(8)).floorRoot(3)).toEq(2);
+      expect((new SNat(9)).floorRoot(3)).toEq(2);
+
+      expect((new SNat(26)).floorRoot(3)).toEq(2);
+      expect((new SNat(27)).floorRoot(3)).toEq(3);
+      expect((new SNat(28)).floorRoot(3)).toEq(3);
+
+      expect((new SNat(63)).floorRoot(3)).toEq(3);
+      expect((new SNat(64)).floorRoot(3)).toEq(4);
+      expect((new SNat(65)).floorRoot(3)).toEq(4);
+    });
+
+    it('fourth root', function() {
+      expect((new SNat(0)).floorRoot(4)).toEq(0);
+      for (var i = 1; i < 15; ++i) {
+        expect((new SNat(i)).floorRoot(4)).toEq(1);
+      }
+
+      expect((new SNat(15)).floorRoot(4)).toEq(1);
+      expect((new SNat(16)).floorRoot(4)).toEq(2);
+      expect((new SNat(17)).floorRoot(4)).toEq(2);
+
+      expect((new SNat(80)).floorRoot(4)).toEq(2);
+      expect((new SNat(81)).floorRoot(4)).toEq(3);
+      expect((new SNat(82)).floorRoot(4)).toEq(3);
+
+      expect((new SNat(255)).floorRoot(4)).toEq(3);
+      expect((new SNat(256)).floorRoot(4)).toEq(4);
+      expect((new SNat(257)).floorRoot(4)).toEq(4);
+    });
+
+    it('large root', function() {
+      var r = 99;
+      expect((new SNat(0)).floorRoot(r)).toEq(0);
+      var twoPowR = (new SNat(2)).pow(r);
+      var threePowR = (new SNat(3)).pow(r);
+      var fourPowR = (new SNat(4)).pow(r);
+
+      for (var i = 1; i < 100; ++i) {
+        expect((new SNat(i)).floorRoot(r)).toEq(1);
+      }
+
+      expect((new SNat(twoPowR.minus(1))).floorRoot(r)).toEq(1);
+      expect((new SNat(twoPowR)).floorRoot(r)).toEq(2);
+      expect((new SNat(twoPowR.plus(1))).floorRoot(r)).toEq(2);
+
+      expect((new SNat(threePowR.minus(1))).floorRoot(r)).toEq(2);
+      expect((new SNat(threePowR)).floorRoot(r)).toEq(3);
+      expect((new SNat(threePowR.plus(1))).floorRoot(r)).toEq(3);
+
+      expect((new SNat(fourPowR.minus(1))).floorRoot(r)).toEq(3);
+      expect((new SNat(fourPowR)).floorRoot(r)).toEq(4);
+      expect((new SNat(fourPowR.plus(1))).floorRoot(r)).toEq(4);
+    });
+  });
+
+  describe('random', function() {
+    function alwaysZero() { return 0.0; }
+    function alwaysOneHalf() { return 0.5; }
+    function alwaysOneMinusEpsilon() { return 1.0 - 2e-16; }
+    function alwaysOne() { return 1.0; }
+
+    var googol = (new SNat(10)).pow(100);
+
+    it('alwaysZero', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysZero);
+      }
+      expect(random(1, 100)).toEq('1');
+      expect(random(2, 1000)).toEq('2');
+      expect(random(3, 10000)).toEq('3');
+      expect(random(4, googol)).toEq('4');
+    });
+
+    it('alwaysOneHalf', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysOneHalf);
+      }
+      expect(random(5, 100)).toEq('52');
+      expect(random(6, 1000)).toEq('503');
+      expect(random(7, 10000)).toEq('5003');
+      var googolLB = googol.div(2);
+      var googolUB = googolLB.plus((new SNat(10)).pow(91));
+      expect(random(8, googol)).toGt(googolLB);
+      expect(random(9, googol)).toLt(googolUB);
+    });
+
+    it('alwaysOneMinusEpsilon', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysOneMinusEpsilon);
+      }
+      expect(random(10, 100)).toEq('99');
+      expect(random(11, 1000)).toEq('999');
+      expect(random(12, 10000)).toEq('9999');
+      expect(random(13, googol)).toEq(googol.minus(1));
+    });
+
+    it('alwaysOne', function() {
+      function random(min, max) {
+        return SNat.random(min, max, alwaysOne);
+      }
+      expect(random(14, 100)).toEq('14');
+      expect(random(15, 1000)).toEq('15');
+      expect(random(16, 10000)).toEq('16');
+      expect(random(17, googol)).toEq('17');
+    });
+
+    it('default', function() {
+      var a = SNat.random(18, 100);
+      var b = SNat.random(19, 1000);
+      var c = SNat.random(20, 10000);
+      var d = SNat.random(21, googol);
+      expect(a.ge(18)).toBeTruthy();
+      expect(a.lt(100)).toBeTruthy();
+      expect(b.ge(19)).toBeTruthy();
+      expect(b.lt(1000)).toBeTruthy();
+      expect(c.ge(20)).toBeTruthy();
+      expect(c.lt(10000)).toBeTruthy();
+      expect(d.ge(21)).toBeTruthy();
+      expect(d.lt(googol)).toBeTruthy();
+    });
+
+    it('error', function() {
+      expect(function() { SNat.random(0, 0, alwaysZero) })
+        .toThrow('invalid range [0, 0)');
+      expect(function() { SNat.random(5, 5, alwaysZero) })
+        .toThrow('invalid range [5, 5)');
+      expect(function() { SNat.random(10, 5, alwaysZero) })
+        .toThrow('invalid range [10, 5)');
+    });
+  });
+
+  describe('rsa', function() {
+    it('mult', function() {
+      for (var i in rsa) {
+        var f1 = new SNat(rsa[i][0]);
+        var f2 = new SNat(rsa[i][1]);
+        expect(f1.times(f2)).toEq(rsa[i][2]);
+      }
+    });
+
+    it('div', function() {
+      for (var i in rsa) {
+        var s = new SNat(rsa[i][2]);
+        expect(s.div(rsa[i][0])).toEq(rsa[i][1]);
+        expect(s.div(rsa[i][1])).toEq(rsa[i][0]);
+      }
+    });
+  });
 });

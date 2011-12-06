@@ -514,3 +514,31 @@ SNat.prototype.ceilLg = function() {
   }
   return ceilLg;
 };
+
+// Returns the largest integer r such that r.pow(s) <= this.
+SNat.prototype.floorRoot = function(s) {
+  s = this.constructor.cast(s);
+  if (s.isZero()) {
+    throw 'root by zero';
+  }
+  if (this.isZero()) {
+    return new SNat(0);
+  }
+  var b = this.ceilLg();
+  b = this.constructor.cast(b);
+  // p = ceil(b/s).
+  var p = b.div(s);
+  if (!b.mod(s).isZero()) {
+    p = p.plus(1);
+  }
+  var x = (new SNat(2)).pow(p);
+  while (x.gt(1)) {
+    // y = floor(((s-1)x + floor(this/x^{s-1}))/s).
+    var y = s.minus(1).times(x).plus(this.div(x.pow(s.minus(1)))).div(s);
+    if (y.ge(x)) {
+      return x;
+    }
+    x = y;
+  }
+  return new SNat(1);
+};
