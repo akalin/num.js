@@ -418,3 +418,24 @@ SNat.prototype.powMod = function(s, m) {
   var id = new SNat(m.gt(1) ? 1 : 0);
   return this.genPow_(s, op, id);
 };
+
+// Returns the natural logarithm (base E) of this object as a double.
+// Returns -Infinity if this object equals 0, and 0 if this object
+// equals 1.  The integral part of the return value fits in 34 bits
+// and thus is represented exactly by a double, but not necessarily a
+// uint32.
+SNat.prototype.ln = function() {
+  var s = this.toString();
+
+  // If this object is small enough to fit in a double without loss of
+  // precision, just pass it through Math.log.
+  if (this.le(Math.pow(2, 53))) {
+    return Math.log(s);
+  }
+
+  // Otherwise, calculate the logarithm by combining the logarithms of
+  // the base 10 mantissa and exponent.
+  var m = parseFloat('.' + s);
+  var e = s.length;
+  return Math.log(m) + e * Math.LN10;
+};

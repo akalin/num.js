@@ -495,6 +495,42 @@ describe('SNat', function() {
     });
   });
 
+  describe('ln', function() {
+    it('zero', function() {
+      expect((new SNat(0)).ln()).toEqual(-Infinity);
+    });
+
+    it('one', function() {
+      expect((new SNat(1)).ln()).toEqual(0);
+    });
+
+    var maxUint32 = ~0 >>> 0;
+
+    it('max uint32', function() {
+      expect((new SNat(maxUint32)).ln()).toEqual(Math.log(maxUint32));
+    });
+
+    it('max uint32 + 1', function() {
+      expect((new SNat(maxUint32 + 1)).ln())
+        .toEqual(Math.log(maxUint32 + 1));
+    });
+
+    var maxIntDouble = Math.pow(2, 53);
+
+    it('max int double', function() {
+      expect((new SNat(maxIntDouble)).ln()).toEqual(Math.log(maxIntDouble));
+    });
+
+    it('max int double + 1', function() {
+      expect((new SNat(maxIntDouble).plus(1)).ln())
+        .toBeCloseTo(36.736800569677101510, 15);
+    });
+
+    it('googol', function() {
+      expect((new SNat(10)).pow(100).ln()).toEqual(230.2585092994046);
+    });
+  });
+
   describe('random', function() {
     function alwaysZero() { return 0.0; }
     function alwaysOneHalf() { return 0.5; }
