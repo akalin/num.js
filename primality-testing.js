@@ -185,8 +185,31 @@ function getArtjuhovWitnessBound(n) {
   return w;
 }
 
+var potentialArtjuhovWitnesses = [
+  ['4', []],
+  ['1373653', [2, 3]],
+  ['9080191', [31, 73]],
+  ['4759123141', [2, 7, 61]],
+  ['2152302898747', [2, 3, 5, 7, 11]],
+  ['3474749660383', [2, 3, 5, 7, 11, 13]],
+  ['341550071728321', [2, 3, 5, 7, 11, 13, 17]],
+];
+
 function getFirstArtjuhovWitness(n) {
   n = SNat.cast(n);
+
+  for (var i = 0; i < potentialArtjuhovWitnesses.length; ++i) {
+    if (n.lt(potentialArtjuhovWitnesses[i][0])) {
+      var potentialWitnesses = potentialArtjuhovWitnesses[i][1];
+      for (var j = 0; j < potentialWitnesses.length; ++j) {
+        var potentialWitness = potentialWitnesses[j];
+        if (hasArtjuhovWitness(n, potentialWitness)) {
+          return potentialWitness;
+        }
+      }
+      return null;
+    }
+  }
 
   var w = getArtjuhovWitnessBound(n);
   for (var a = new SNat(2); a.le(w); a = a.plus(1)) {
