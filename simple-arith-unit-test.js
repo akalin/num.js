@@ -662,10 +662,8 @@ describe('SNat', function() {
     it('Fermat (small primes)', function() {
       // More than this is slow.
       for (var i = 0; i < 10; ++i) {
-        var p = new SNat(smallPrimes[i]);
         for (var j = 1; j < i; ++j) {
-          var q = new SNat(smallPrimes[j]);
-          expect(q.powMod(p.minus(1), p)).toEq('1');
+          expect(hasFermatWitness(smallPrimes[i], smallPrimes[j])).toBeFalsy();
         }
       }
     });
@@ -675,7 +673,7 @@ describe('SNat', function() {
       // More than this is slow.
       for (var j = 0; j < 10; ++j) {
         var q = new SNat(smallPrimes[j]);
-        expect(q.powMod(p.minus(1), p)).toEq('1');
+        expect(hasFermatWitness(p, smallPrimes[j])).toBeFalsy();
       }
     });
   });

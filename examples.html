@@ -10,6 +10,7 @@
   <!-- Source files -->
   <script type="text/javascript" src="simple-arith.js"></script>
   <script type="text/javascript" src="trial-division.js"></script>
+  <script type="text/javascript" src="primality-testing.js"></script>
 </head>
 
 <body>
@@ -31,6 +32,48 @@
   </script>
 </p>
 <script type="text/javascript" src="trial-division-example.js"></script>
+
+<p id="fermatExample">
+  Let <var>n</var> =
+  <input data-bind="value: nStr, valueUpdate: 'afterkeydown'" size="6" />
+  and <var>a</var> =
+  <input data-bind="value: aStr, valueUpdate: 'afterkeydown'" size="6" />.
+  <!-- ko template: outputTemplate --><!-- /ko -->
+
+  <script type="text/html" id="fermat.error.invalidN">
+    <var>n</var> is not a valid number.
+  </script>
+
+  <script type="text/html" id="fermat.error.invalidA">
+    <var>a</var> is not a valid number.
+  </script>
+
+  <script type="text/html" id="fermat.error.outOfBoundsN">
+    <var>n</var> must be greater than 2.
+  </script>
+
+  <script type="text/html" id="fermat.error.outOfBoundsA">
+    <var>a</var> must be greater than 1 and less than <var>n</var>.
+  </script>
+
+  <script type="text/html" id="fermat.success">
+    <var>a</var><sup><var>n</var>&minus;1</sup> &equiv;
+    <span data-bind="text: r"></span> (mod <var>n</var>) so
+    therefore <var>n</var> is
+    <span data-bind="if: isCompositeByFermat()">
+      composite.
+      <span data-bind="if: r() && r().isZero()">
+        Furthermore, gcd(<var>a</var>, <var>n</var>) =
+        <span data-bind="text: k"></span> is a non-trivial
+        factor of <var>n</var>.
+      </span>
+    </span>
+    <span data-bind="ifnot: isCompositeByFermat()">
+      either prime or a Fermat pseudoprime.
+    </span>
+  </script>
+</p>
+<script type="text/javascript" src="fermat-example.js"></script>
 
 </body>
 </html>
