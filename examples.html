@@ -75,5 +75,72 @@
 </p>
 <script type="text/javascript" src="fermat-example.js"></script>
 
+<p id="artjuhovExample">
+  Let <var>n</var> =
+  <input data-bind="value: nStr, valueUpdate: 'afterkeydown'" size="6" />
+  and <var>a</var> =
+  <input data-bind="value: aStr, valueUpdate: 'afterkeydown'" size="6" />.
+  <!-- ko template: outputTemplate --><!-- /ko -->
+
+  <script type="text/html" id="artjuhov.error.invalidN">
+    <var>n</var> is not a valid number.
+  </script>
+
+  <script type="text/html" id="artjuhov.error.invalidA">
+    <var>a</var> is not a valid number.
+  </script>
+
+  <script type="text/html" id="artjuhov.error.outOfBoundsN">
+    <var>n</var> must be greater than 2.
+  </script>
+
+  <script type="text/html" id="artjuhov.error.outOfBoundsA">
+    <var>a</var> must be greater than 1 and less than <var>n</var>.
+  </script>
+
+  <script type="text/html" id="artjuhov.success.fermatEquivResult">
+    <var>n</var> is even, so this reduces to the Fermat primality test.
+    <var>a</var><sup><var>n</var>&minus;1</sup> &equiv;
+    <span data-bind="text: r"></span> (mod <var>n</var>) so
+    therefore <var>n</var> is
+    <span data-bind="if: isCompositeByArtjuhov()">
+      composite.
+      <span data-bind="html: factorsHtml"></span>
+    </span>
+    <span data-bind="ifnot: isCompositeByArtjuhov()">
+      an Artjuhov pseudoprime.
+    </span>
+  </script>
+
+  <script type="text/html" id="artjuhov.success.impliesFinalEquivResult">
+    <var>n</var> &minus; 1 = <span data-bind="html: nMinusOneHtml"></span>,
+    and <var>r</var> &equiv; <span data-bind="html: rHtml"></span>
+    &equiv; <span data-bind="html: rResultHtml"></span>
+    (mod <var>n</var>), so
+    <var>a</var><sup><var>n</var>&minus;1</sup> &equiv;
+    <span data-bind="html: aNMinusOneHtml"></span> (mod <var>n</var>),
+    and therefore <var>n</var> is
+    <span data-bind="if: isCompositeByArtjuhov()">
+      composite.
+      <span data-bind="html: factorsHtml"></span>
+    </span>
+    <span data-bind="ifnot: isCompositeByArtjuhov()">
+      either prime or an Artjuhov pseudoprime.
+    </span>
+  </script>
+
+  <script type="text/html" id="artjuhov.success.nonTrivialSqrtResult">
+    <var>n</var> &minus; 1 = <span data-bind="html: nMinusOneHtml"></span>,
+    <var>r</var> &equiv; <span data-bind="html: rHtml"></span>
+    &equiv; 1 (mod <var>n</var>), and
+    &radic;<var>r</var> &equiv; <span data-bind="html: rSqrtHtml"></span>
+    &equiv; <span data-bind="text: rSqrt"></span> (mod <var>n</var>), so
+    <span data-bind="text: rSqrt"></span> is a non-trivial square root
+    of unity mod <var>n</var> and therefore <var>n</var> is composite.
+    <span data-bind="html: factorsHtml"></span>
+  </script>
+</p>
+<script type="text/javascript" src="artjuhov-example.js"></script>
+
 </body>
 </html>

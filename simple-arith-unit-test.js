@@ -659,21 +659,25 @@ describe('SNat', function() {
   });
 
   describe('primes', function() {
-    it('Fermat (small primes)', function() {
+    it('Witnesses (small primes)', function() {
       // More than this is slow.
       for (var i = 0; i < 10; ++i) {
         for (var j = 1; j < i; ++j) {
-          expect(hasFermatWitness(smallPrimes[i], smallPrimes[j])).toBeFalsy();
+          expect(hasFermatWitness(smallPrimes[i], smallPrimes[j]))
+            .toBeFalsy();
+          expect(hasArtjuhovWitness(smallPrimes[i], smallPrimes[j]))
+            .toBeFalsy();
         }
       }
     });
 
-    it('Fermat (Mersenne primes)', function() {
+    it('Witnesses (Mersenne primes)', function() {
       var p = (new SNat(2)).pow(mersenneExponents[4]).minus(1);
       // More than this is slow.
       for (var j = 0; j < 10; ++j) {
         var q = new SNat(smallPrimes[j]);
         expect(hasFermatWitness(p, smallPrimes[j])).toBeFalsy();
+        expect(hasArtjuhovWitness(p, smallPrimes[j])).toBeFalsy();
       }
     });
   });
