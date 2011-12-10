@@ -224,3 +224,18 @@ function getFirstArtjuhovWitness(n) {
 function isPrimeByMiller(n) {
   return (getFirstArtjuhovWitness(n) == null);
 }
+
+// Returns a probable b-bit prime that is at least 2^b.  All
+// parameters but b are passed to isProbablePrime.
+function findProbablePrime(b, hasWitness, rng, numSamples) {
+  b = SNat.cast(b);
+
+  var lb = (new SNat(2)).pow(b.minus(1));
+  var ub = lb.times(2);
+  while (true) {
+    var n = SNat.random(lb, ub);
+    if (isProbablePrime(n, hasWitness, rng, numSamples)) {
+      return n;
+    }
+  }
+}
