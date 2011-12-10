@@ -184,3 +184,20 @@ function getArtjuhovWitnessBound(n) {
   }
   return w;
 }
+
+function getFirstArtjuhovWitness(n) {
+  n = SNat.cast(n);
+
+  var w = getArtjuhovWitnessBound(n);
+  for (var a = new SNat(2); a.le(w); a = a.plus(1)) {
+    if (hasArtjuhovWitness(n, a)) {
+      return a;
+    }
+  }
+
+  return null;
+}
+
+function isPrimeByMiller(n) {
+  return (getFirstArtjuhovWitness(n) == null);
+}

@@ -169,4 +169,12 @@ describe('primality testing', function() {
       expect(getArtjuhovWitnessBound(5)).toEq(3);
     });
   });
+
+  describe('isPrimeByMiller', function() {
+    var smallOddPrimesGt5 = smallPrimes.slice(2);
+    it('small primes', function() {
+      expect(smallOddPrimesGt5.filter(isPrimeByMiller)).
+        toEqual(smallOddPrimesGt5);
+    });
+  });
 });
