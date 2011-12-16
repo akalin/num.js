@@ -1,6 +1,14 @@
 'use strict';
 
 describe('primality testing', function() {
+  beforeEach(function() {
+    this.addMatchers({
+      toEq: function(expected) {
+        return this.actual.eq(expected);
+      }
+    });
+  });
+
   describe('testCompositenessByFermat', function() {
     // Returns the list of a such that 1 < a < n and a is not a Fermat
     // witness to n (in ascending order).
@@ -150,6 +158,15 @@ describe('primality testing', function() {
     it('small primes', function() {
       expect(smallPrimes.filter(function(n) { return isProbablePrime(n); }))
         .toEqual(smallPrimes);
+    });
+  });
+
+  describe('getArtjuhovWitnessBound', function() {
+    it('small', function() {
+      expect(getArtjuhovWitnessBound(2)).toEq(0);
+      expect(getArtjuhovWitnessBound(3)).toEq(1);
+      expect(getArtjuhovWitnessBound(4)).toEq(2);
+      expect(getArtjuhovWitnessBound(5)).toEq(3);
     });
   });
 });

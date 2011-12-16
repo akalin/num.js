@@ -161,3 +161,26 @@ function isProbablePrime(n, hasWitness, numSamples, rng) {
 
   return true;
 }
+
+// Returns w such that the least Artjuhov witness of n, if it exists,
+// is in the interval [2, w].
+function getArtjuhovWitnessBound(n) {
+  n = SNat.cast(n);
+
+  // We want to calculate w = floor(2 ln^2 n).  Let il and fl be the
+  // integer and fractional parts of ln n (respectively).  Then
+  //
+  //   2 ln^2 n = 2 (il + fl)^2 = 2 il^2 + 4 il fl + 2 fl^2.
+  //
+  // 2 il^2 is an integer, so we can simply add on the integer part of
+  // t = 4 il fl + 2 fl^2 to get w.
+  var l = n.ln();
+  var il = Math.floor(l);
+  var fl = l - il;
+  var t = 4*il*fl + 2*fl*fl;
+  var w = new SNat(il).pow(2).times(2).plus(Math.floor(t));
+  if (w.gt(n.minus(2))) {
+    w = n.minus(2);
+  }
+  return w;
+}
