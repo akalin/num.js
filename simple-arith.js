@@ -594,6 +594,15 @@ SPoly.new_ = function(a) {
   return n;
 };
 
+// Returns the degree of the polynomial.  A constant polynomial has
+// degree 0, except for the zero polynomial which has degree negative
+// infinity.
+SPoly.prototype.degree = function() {
+  var a = this.a_;
+  var l = a.length;
+  return (l > 0) ? a[l-1][0] : -Infinity;
+};
+
 // Comparison operators.
 
 SPoly.prototype.eq = function(p) {

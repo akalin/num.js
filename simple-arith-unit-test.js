@@ -907,6 +907,15 @@ describe('SPoly', function() {
     });
   });
 
+  describe('degree', function() {
+    it('eq', function() {
+      var a = new SPoly(new SNat(31415926535));
+      expect(new SPoly().degree()).toEqual(-Infinity);
+      expect(a.degree()).toEq(0);
+      expect(a.shiftLeft(5).degree()).toEq(5);
+    });
+  });
+
   describe('comparisons', function() {
     var a = new SPoly(new SNat(31415926535));
     var b = a.shiftLeft(10);
