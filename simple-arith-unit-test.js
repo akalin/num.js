@@ -897,11 +897,53 @@ describe('SPoly', function() {
     });
   });
 
+  describe('shiftLeft', function() {
+    it('basic', function() {
+      expect(new SPoly().shiftLeft(100)).toHaveArray([]);
+      expect(new SPoly(new SNat(5)).shiftLeft(100)).toHaveArray([[100, 5]]);
+    });
+
+    it('no shift', function() {
+      expect(new SPoly().shiftLeft(0)).toHaveArray([]);
+      expect(new SPoly(new SNat(5)).shiftLeft(0)).toHaveArray([[0, 5]]);
+    });
+  });
+
+  describe('shiftRight', function() {
+    it('basic', function() {
+      expect(new SPoly(new SNat(5)).shiftRight(1)).toHaveArray([]);
+      expect(new SPoly(new SNat(5)).shiftLeft(100).shiftRight(49))
+        .toHaveArray([[51, 5]]);
+      expect(new SPoly(new SNat(5)).shiftLeft(100).shiftRight(100))
+        .toHaveArray([[0, 5]]);
+    });
+
+    it('no shift', function() {
+      expect(new SPoly().shiftRight(0)).toHaveArray([]);
+      expect(new SPoly(new SNat(5)).shiftRight(0)).toHaveArray([[0, 5]]);
+    });
+  });
+
   describe('toString', function() {
     it('constant', function() {
       var n = new SNat('3141592653589');
       expect(new SPoly(new SNat(5))).toHaveString('5');
       expect(new SPoly(n)).toHaveString('3141592653589');
+    });
+
+    it('x', function() {
+      var n = new SNat('3141592653589');
+      expect(new SPoly(new SNat(1)).shiftLeft(1)).toHaveString('x');
+      expect(new SPoly(n).shiftLeft(1)).toHaveString('3141592653589x');
+    });
+
+    it('x^n', function() {
+      var i = new SNat(1);
+      var n = new SNat('3141592653589');
+      expect(new SPoly(i).shiftLeft(2)).toHaveString('x^2');
+      expect(new SPoly(i).shiftLeft(100)).toHaveString('x^100');
+      expect(new SPoly(n).shiftLeft(2)).toHaveString('3141592653589x^2');
+      expect(new SPoly(n).shiftLeft(100)).toHaveString('3141592653589x^100');
     });
 
     it('degenerate', function() {

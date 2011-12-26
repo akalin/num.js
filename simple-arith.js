@@ -579,7 +579,7 @@ function SPoly(c) {
   if (c == undefined) {
     return SPoly.new_([]);
   }
-  return SPoly.new_([[0, c]]);
+  return SPoly.new_([[new SNat(0), c]]);
 }
 
 // Private constructor.  Returns an SPoly object with the given array
@@ -592,6 +592,24 @@ SPoly.new_ = function(a) {
   var n = Object.create(SPoly.prototype);
   n.a_ = a.filter(isNonDegenerate);
   return n;
+};
+
+// Returns this polynomial multiplied by x^n.  n may be negative, but
+// n must be an integer.
+SPoly.prototype.shiftLeft = function(n) {
+  function shiftTerm(term) {
+    return [term[0].plus(n), term[1]];
+  }
+  return SPoly.new_(this.a_.map(shiftTerm));
+};
+
+// Returns this polynomial divided by x^n.  n may be negative, but n
+// must be an integer.
+SPoly.prototype.shiftRight = function(n) {
+  function shiftTerm(term) {
+    return term[0].ge(n) ? [term[0].minus(n), term[1]] : [term[0], new SNat(0)];
+  }
+  return SPoly.new_(this.a_.map(shiftTerm));
 };
 
 // Returns a human-readable string representation of the SPoly.
