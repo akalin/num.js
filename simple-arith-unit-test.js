@@ -880,6 +880,16 @@ describe('SPoly', function() {
       // equal to the given expected string.
       toHaveString: function(expected) {
         return this.actual.toString() == expected;
+      },
+
+      // Forwarders to SPoly comparison operators.
+
+      toEq: function(expected) {
+        return this.actual.eq(expected);
+      },
+
+      toNe: function(expected) {
+        return this.actual.ne(expected);
       }
     });
   });
@@ -894,6 +904,40 @@ describe('SPoly', function() {
       var n = new SNat('3141592653589');
       expect(new SPoly(new SNat(5))).toHaveArray([[0, 5]]);
       expect(new SPoly(n)).toHaveArray([[0, n]]);
+    });
+  });
+
+  describe('comparisons', function() {
+    var a = new SPoly(new SNat(31415926535));
+    var b = a.shiftLeft(10);
+    var c = new SPoly(new SNat(2718281828));
+
+    it('eq', function() {
+      expect(a).toEq(a);
+      expect(a).not.toEq(b);
+      expect(a).not.toEq(c);
+
+      expect(b).not.toEq(a);
+      expect(b).toEq(b);
+      expect(b).not.toEq(c);
+
+      expect(c).not.toEq(a);
+      expect(c).not.toEq(b);
+      expect(c).toEq(c);
+    });
+
+    it('ne', function() {
+      expect(a).not.toNe(a);
+      expect(a).toNe(b);
+      expect(a).toNe(c);
+
+      expect(b).toNe(a);
+      expect(b).not.toNe(b);
+      expect(b).toNe(c);
+
+      expect(c).toNe(a);
+      expect(c).toNe(b);
+      expect(c).not.toNe(c);
     });
   });
 

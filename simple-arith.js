@@ -594,6 +594,24 @@ SPoly.new_ = function(a) {
   return n;
 };
 
+// Comparison operators.
+
+SPoly.prototype.eq = function(p) {
+  var u = this.a_;
+  var v = p.a_;
+  var ul = u.length;
+  var vl = v.length;
+  if (ul != vl) return false;
+  for (var j = 0; j < ul; ++j) {
+    if (u[j][0].ne(v[j][0]) || u[j][1].ne(v[j][1])) return false;
+  }
+  return true;
+};
+
+SPoly.prototype.ne = function(p) {
+  return !this.eq(p);
+};
+
 // Returns this polynomial multiplied by x^n.  n may be negative, but
 // n must be an integer.
 SPoly.prototype.shiftLeft = function(n) {
