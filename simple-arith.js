@@ -707,6 +707,14 @@ SPoly.prototype.times = function(s) {
   return w;
 };
 
+// Returns this object with its coefficients mod m.
+SPoly.prototype.mod = function(m) {
+  var a = this.a_.map(function(term) {
+    return [term[0], term[1].mod(m)];
+  });
+  return SPoly.new_(a);
+}
+
 // Returns this object raised to the nth power with the given
 // multiplication operation and identity, where 0 <= n < 16 must hold.
 // If this object and n are both 0, returns the identity.

@@ -1044,6 +1044,22 @@ describe('SPoly', function() {
     });
   });
 
+  describe('times', function() {
+    it('basic', function() {
+      var i = new SNat(1);
+      // p = x + 1.
+      var p = new SPoly(i).shiftLeft(1).plus(new SPoly(i));
+
+      // p = (x + 1)^2.
+      p = p.times(p);
+      expect(p.mod(2)).toHaveArray([[0, 1], [2, 1]]);
+
+      // p = (x + 1)^4.
+      p = p.times(p);
+      expect(p.mod(3)).toHaveArray([[0, 1], [1, 1], [3, 1], [4, 1]]);
+    });
+  });
+
   describe('pow', function() {
     var i = new SNat(1);
     // p = x + 1.
@@ -1060,7 +1076,7 @@ describe('SPoly', function() {
         return function op(x, y) {
           var p = x.times(y);
           while(p.degree() >= r) {
-            p = p.shift(-r).plus(p.truncate(r-1));
+            p = p.shiftRight(r).plus(p.truncate(r-1));
           }
           return p.mod(n);
         }
