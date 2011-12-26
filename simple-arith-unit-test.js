@@ -1044,6 +1044,34 @@ describe('SPoly', function() {
     });
   });
 
+  describe('pow', function() {
+    var i = new SNat(1);
+    // p = x + 1.
+    var p = new SPoly(i).shiftLeft(1).plus(new SPoly(i));
+
+    it('basic', function() {
+      expect(p.pow(2)).toHaveArray([[0, 1], [1, 2], [2, 1]]);
+      expect(p.pow(3)).toHaveArray([[0, 1], [1, 3], [2, 3], [3, 1]]);
+      expect(p.pow(4)).toHaveArray([[0, 1], [1, 4], [2, 6], [3, 4], [4, 1]]);
+    });
+
+    it('powMod', function() {
+      function makeModOp(r, n) {
+        return function op(x, y) {
+          var p = x.times(y);
+          while(p.degree() >= r) {
+            p = p.shift(-r).plus(p.truncate(r-1));
+          }
+          return p.mod(n);
+        }
+      }
+
+      expect(p.pow(3, makeModOp(2, 3))).toHaveArray([[0, 1], [1, 1]]);
+      expect(p.pow(5, makeModOp(2, 5))).toHaveArray([[0, 1], [1, 1]]);
+      expect(p.pow(5, makeModOp(3, 5))).toHaveArray([[0, 1], [2, 1]]);
+    });
+  });
+
   describe('toString', function() {
     it('constant', function() {
       var n = new SNat('3141592653589');

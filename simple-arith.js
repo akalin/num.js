@@ -707,6 +707,52 @@ SPoly.prototype.times = function(s) {
   return w;
 };
 
+// Returns this object raised to the nth power with the given
+// multiplication operation and identity, where 0 <= n < 16 must hold.
+// If this object and n are both 0, returns the identity.
+SPoly.prototype.genPow16_ = function(n, op, id) {
+  // Left-to-right binary exponentiation as described in Knuth 4.6.3.
+  var y = id;
+  for (var i = 3; i >= 0; --i) {
+    y = op(y, y);
+    if ((n & (1 << i)) != 0) {
+      y = op(y, this);
+    }
+  }
+  return y;
+};
+
+// Returns this object raised to the sth power with the given
+// multiplication operation and identity.  If this object and s are
+// both 0, returns the identity.
+SPoly.prototype.genPow_ = function(s, op, id) {
+  s = SNat.cast(s);
+
+  // Adapted left-to-right 10-ary exponentation as described in Knuth
+  // 4.6.3.
+  var n = s.a_;
+  var y = id;
+  var b = 10;
+  var powCache = new Array(b);
+  for (var i = n.length - 1; i >= 0; --i) {
+    y = y.genPow16_(b, op, id);
+    if (powCache[n[i]] == undefined) {
+      powCache[n[i]] = this.genPow16_(n[i], op, id);
+    }
+    y = op(y, powCache[n[i]]);
+  }
+  return y;
+};
+
+// Returns this object raised to the nth power.  If this object and n
+// are both 0, returns the constant polynomial 1.
+SPoly.prototype.pow = function(n, op) {
+  var times = function(x, y) { return x.times(y); }
+  op = op || times;
+  // TODO(akalin): Remove use of SNat here.
+  return this.genPow_(n, op, new SPoly(new SNat(1)));
+};
+
 // Returns a human-readable string representation of the SPoly.
 SPoly.prototype.toString = function() {
   function termToString(term) {
