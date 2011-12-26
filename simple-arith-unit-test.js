@@ -853,3 +853,60 @@ describe('SNat', function() {
     });
   });
 });
+
+describe('SPoly', function() {
+  beforeEach(function() {
+    this.addMatchers({
+      // Returns true iff the actual SPoly's internal representation is
+      // elementwise equal to the given expected array.
+      toHaveArray: function(expected) {
+        var actual = this.actual.a_;
+        var l = expected.length;
+        if (this.actual.a_.length != l) {
+          return false;
+        }
+        for (var i = 0; i < l; ++i) {
+          if (actual[i][0].ne(expected[i][0])) {
+            return false;
+          }
+          if (actual[i][1].ne(expected[i][1])) {
+            return false;
+          }
+        }
+        return true;
+      },
+
+      // Returns true iff the actual SPoly's string representation is
+      // equal to the given expected string.
+      toHaveString: function(expected) {
+        return this.actual.toString() == expected;
+      }
+    });
+  });
+
+  describe('constructor', function() {
+    it('degenerate', function() {
+      expect(new SPoly()).toHaveArray([]);
+      expect(new SPoly(new SNat())).toHaveArray([]);
+    });
+
+    it('from SNat', function() {
+      var n = new SNat('3141592653589');
+      expect(new SPoly(new SNat(5))).toHaveArray([[0, 5]]);
+      expect(new SPoly(n)).toHaveArray([[0, n]]);
+    });
+  });
+
+  describe('toString', function() {
+    it('constant', function() {
+      var n = new SNat('3141592653589');
+      expect(new SPoly(new SNat(5))).toHaveString('5');
+      expect(new SPoly(n)).toHaveString('3141592653589');
+    });
+
+    it('degenerate', function() {
+      expect(new SPoly()).toHaveString('0');
+      expect(new SPoly(new SNat())).toHaveString('0');
+    });
+  });
+});

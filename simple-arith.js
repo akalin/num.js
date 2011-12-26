@@ -552,3 +552,61 @@ SNat.prototype.floorRoot = function(s) {
   }
   return new SNat(1);
 };
+
+// SPoly is a simple polynomial class that uses an internal
+// representation of an array of power/coefficient terms.
+
+// An SNat has an array a_ of terms with non-zero coefficients sorted
+// by increasing power.  (The coefficients do not necessarily have to
+// be SNats, but they must obey the same interface.)  The powers must
+// be non-negative integers.  For example, the SPoly representing
+// x^200 + 3141592653589 is (assuming SNat coefficients)
+//
+//  { a_: [[0, new SNat('3141592653589')], [200, new SNat(1)]] },
+//
+// and the SNat representing 0 is just
+//
+//  { a_: [] }.
+
+// Constructs a constant SPoly from the given argument.  If the
+// argument is omitted, an SPoly representing 0 is constructed.
+// Otherwise, the argument must be an object that obeys the SNat
+// interface.
+//
+// n = new SPoly();               // 0
+// n = new SPoly(new SNat(100));  // 100
+function SPoly(c) {
+  if (c == undefined) {
+    return SPoly.new_([]);
+  }
+  return SPoly.new_([[0, c]]);
+}
+
+// Private constructor.  Returns an SPoly object with the given array
+// of power/coefficient terms but with terms with non-positive
+// coefficients or negative powers stripped out.
+SPoly.new_ = function(a) {
+  function isNonDegenerate(term) {
+    return term[1].isNonZero();
+  }
+  var n = Object.create(SPoly.prototype);
+  n.a_ = a.filter(isNonDegenerate);
+  return n;
+};
+
+// Returns a human-readable string representation of the SPoly.
+SPoly.prototype.toString = function() {
+  function termToString(term) {
+    var n = term[0];
+    var c = term[1];
+    if (n == 0) {
+      return c.toString();
+    }
+    var nStr = 'x';
+    if (n.gt(1)) {
+      nStr += '^' + n.toString();
+    }
+    return c.eq(1) ? nStr : (c.toString() + nStr);
+  }
+  return this.a_.map(termToString).reverse().join('+') || '0';
+};
