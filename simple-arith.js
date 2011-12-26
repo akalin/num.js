@@ -671,6 +671,25 @@ SPoly.prototype.plus = function(s) {
   return this.constructor.new_(w);
 };
 
+// Returns the product of this object and s.
+SPoly.prototype.times = function(s) {
+  var v = s.a_;
+  var vl = v.length;
+
+  var w = new SPoly();
+  for (var j = 0; j < vl; ++j) {
+    var vj = v[j];
+    var vn = vj[0];
+    var vc = vj[1];
+    var uvj = this.shiftLeft(vn);
+    uvj.a_ = uvj.a_.map(function(term) {
+      return [term[0], term[1].times(vc)];
+    });
+    w = w.plus(uvj);
+  }
+  return w;
+};
+
 // Returns a human-readable string representation of the SPoly.
 SPoly.prototype.toString = function() {
   function termToString(term) {

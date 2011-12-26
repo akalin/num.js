@@ -1004,6 +1004,22 @@ describe('SPoly', function() {
     });
   });
 
+  describe('times', function() {
+    it('basic', function() {
+      var i = new SNat(1);
+      // p = x + 1.
+      var p = new SPoly(i).shiftLeft(1).plus(new SPoly(i));
+
+      // p = (x + 1)^2.
+      p = p.times(p);
+      expect(p).toHaveArray([[0, 1], [1, 2], [2, 1]]);
+
+      // p = (x + 1)^4.
+      p = p.times(p);
+      expect(p).toHaveArray([[0, 1], [1, 4], [2, 6], [3, 4], [4, 1]]);
+    });
+  });
+
   describe('toString', function() {
     it('constant', function() {
       var n = new SNat('3141592653589');
