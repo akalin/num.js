@@ -968,6 +968,42 @@ describe('SPoly', function() {
     });
   });
 
+  describe('plus', function() {
+    var x = new SPoly();
+    for (var i = 0; i < 5; ++i) {
+      x = x.plus((new SPoly(new SNat(i + 1))).shiftLeft(i));
+    }
+
+    it('monomial', function() {
+      expect(x).toHaveArray([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]);
+    });
+
+    it('zero', function() {
+      expect(x.plus(new SPoly()))
+        .toHaveArray([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]);
+    });
+
+    it('polynomial', function() {
+      expect(x.plus(x.shiftLeft(2)))
+        .toHaveArray(
+          [[0, 1], [1, 2], [2, 4], [3, 6], [4, 8], [5, 4], [6, 5]]);
+    });
+
+    it('staggered', function() {
+      var x = new SPoly();
+      var y = new SPoly();
+      for (var i = 0; i < 5; ++i) {
+        x = x.plus((new SPoly(new SNat(2*i+1))).shiftLeft(2*i));
+        y = y.plus((new SPoly(new SNat(2*i+2))).shiftLeft(2*i+1));
+      }
+
+      expect(x.plus(y))
+        .toHaveArray(
+          [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7],
+           [7, 8], [8, 9], [9, 10]]);
+    });
+  });
+
   describe('toString', function() {
     it('constant', function() {
       var n = new SNat('3141592653589');
@@ -988,6 +1024,14 @@ describe('SPoly', function() {
       expect(new SPoly(i).shiftLeft(100)).toHaveString('x^100');
       expect(new SPoly(n).shiftLeft(2)).toHaveString('3141592653589x^2');
       expect(new SPoly(n).shiftLeft(100)).toHaveString('3141592653589x^100');
+    });
+
+    it('polynomial', function() {
+      var x = new SPoly();
+      for (var i = 0; i < 5; ++i) {
+        x = x.plus((new SPoly(new SNat(i + 1))).shiftLeft(i));
+      }
+      expect(x).toHaveString('5x^4+4x^3+3x^2+2x+1');
     });
 
     it('degenerate', function() {

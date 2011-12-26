@@ -630,6 +630,47 @@ SPoly.prototype.shiftRight = function(n) {
   return SPoly.new_(this.a_.map(shiftTerm));
 };
 
+// Returns the sum of this object and s.
+SPoly.prototype.plus = function(s) {
+  var u = this.a_;
+  var v = s.a_;
+  var ul = u.length;
+  var vl = v.length;
+
+  // Walk both arrays, appending terms to w in sorted order (adding
+  // coefficients for terms with the same degree).
+  var i = 0;
+  var j = 0;
+  var w = [];
+  while (i < ul && j < vl) {
+    var ui = u[i];
+    var vj = v[j];
+    var un = ui[0];
+    var vn = vj[0];
+    if (un.lt(vn)) {
+      w.push(ui);
+      ++i;
+    } else if (un.eq(vn)) {
+      w.push([un, ui[1].plus(vj[1])]);
+      ++i;
+      ++j;
+    } else {
+      w.push(vj);
+      ++j;
+    }
+  }
+
+  // We've exhausted one array, so just append the remaining terms
+  // from the other.
+  if (i < ul) {
+    w = w.concat(u.slice(i));
+  } else if (j < vl) {
+    w = w.concat(v.slice(j));
+  }
+
+  return this.constructor.new_(w);
+};
+
 // Returns a human-readable string representation of the SPoly.
 SPoly.prototype.toString = function() {
   function termToString(term) {
