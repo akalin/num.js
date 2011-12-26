@@ -639,6 +639,14 @@ SPoly.prototype.shiftRight = function(n) {
   return SPoly.new_(this.a_.map(shiftTerm));
 };
 
+// Returns this polynomial without all terms of degree greater than n.
+SPoly.prototype.truncate = function(n) {
+  function hasDegreeLeN(term) {
+    return term[0].le(n);
+  }
+  return SPoly.new_(this.a_.filter(hasDegreeLeN));
+};
+
 // Returns the sum of this object and s.
 SPoly.prototype.plus = function(s) {
   var u = this.a_;

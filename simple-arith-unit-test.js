@@ -977,6 +977,21 @@ describe('SPoly', function() {
     });
   });
 
+  describe('truncate', function() {
+    it('basic', function() {
+      var p = new SPoly(new SNat(5)).shiftLeft(100);
+      expect(p.truncate(99)).toHaveArray([]);
+      expect(p.truncate(100)).toHaveArray([[100, 5]]);
+    });
+
+    it('large', function() {
+      var d = (new SNat(2)).pow(100);
+      var p = new SPoly(new SNat(5)).shiftLeft(d);
+      expect(p.truncate(d.minus(1))).toHaveArray([]);
+      expect(p.truncate(d)).toHaveArray([[d, 5]]);
+    });
+  });
+
   describe('plus', function() {
     var x = new SPoly();
     for (var i = 0; i < 5; ++i) {
