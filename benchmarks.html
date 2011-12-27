@@ -7,9 +7,11 @@
   <!-- include source files here... -->
   <script type="text/javascript" src="simple-arith.js"></script>
   <script type="text/javascript" src="trial-division.js"></script>
+  <script type="text/javascript" src="primality-testing.js"></script>
 
   <!-- include benchmark files here... -->
   <script type="text/javascript" src="trial-division-benchmark.js"></script>
+  <script type="text/javascript" src="primality-testing-benchmark.js"></script>
 
 </head>
 <body>
@@ -25,9 +27,13 @@ var outputFn = function(str) {
 
 var testPrimes = ['100003', '10000019', '1000000007'];
 
-var suites = testPrimes.map(function(o) {
-  return makeTrialDivideSuite(o, outputFn);
-});
+var suiteGenerators = [makeTrialDivideSuite, makePrimalityTestingSuite];
+
+var suites = suiteGenerators.map(function(suiteGenerator) {
+  return testPrimes.map(function(o) {
+    return suiteGenerator(o, outputFn);
+  })
+}).reduce(function(a, b) { return a.concat(b); });
 
 var runSuites = function(i) {
   if (i >= suites.length) {
