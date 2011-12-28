@@ -1060,6 +1060,18 @@ describe('SPoly', function() {
     });
   });
 
+  describe('modPow', function() {
+    it('basic', function() {
+      var i = new SNat(1);
+      // p = x + 1.
+      var p = new SPoly(i).shiftLeft(1).plus(new SPoly(i));
+
+      // p = (x + 1)^2.
+      p = p.times(p);
+      expect(p.modPow(2)).toHaveArray([[0, 2], [1, 2]]);
+    });
+  });
+
   describe('pow', function() {
     var i = new SNat(1);
     // p = x + 1.

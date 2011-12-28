@@ -713,7 +713,29 @@ SPoly.prototype.mod = function(m) {
     return [term[0], term[1].mod(m)];
   });
   return SPoly.new_(a);
-}
+};
+
+// Returns this object with its powers mod m.
+SPoly.prototype.modPow = function(m) {
+  var terms = {};
+  for (var i = 0; i < this.a_.length; ++i) {
+    var term = this.a_[i];
+    var d = term[0].mod(m);
+    var c = term[1];
+    var k = d.toString();
+    if (k in terms) {
+      terms[k][1] = terms[k][1].plus(c);
+    } else {
+      terms[k] = [d, c];
+    }
+  }
+  var a = [];
+  for (var k in terms) {
+    a.push(terms[k]);
+  }
+  a.sort(function(x, y) { return x[0].cmp_(y[0]); });
+  return SPoly.new_(a);
+};
 
 // Returns this object raised to the nth power with the given
 // multiplication operation and identity, where 0 <= n < 16 must hold.
