@@ -581,6 +581,34 @@ describe('SNat', function() {
     });
   });
 
+  describe('floorLg', function() {
+    it('zero', function() {
+      expect((new SNat(0)).floorLg()).toEqual(-Infinity);
+    });
+
+    it('one', function() {
+      expect((new SNat(1)).floorLg()).toEqual(0);
+    });
+
+    it('uint powers of 2', function() {
+      for (var i = 1; i < 31; ++i) {
+        var n = (1 << i) >>> 0;
+        expect((new SNat(n-1)).floorLg()).toEqual(i-1);
+        expect((new SNat(n)).floorLg()).toEqual(i);
+        expect((new SNat(n+1)).floorLg()).toEqual(i);
+      }
+    });
+
+    it('large powers of 2', function() {
+      for (var i = 32; i < 100; ++i) {
+        var n = (new SNat(2)).pow(i);
+        expect(n.minus(1).floorLg()).toEqual(i-1);
+        expect(n.floorLg()).toEqual(i);
+        expect(n.plus(1).floorLg()).toEqual(i);
+      }
+    });
+  });
+
   describe('random', function() {
     function alwaysZero() { return 0.0; }
     function alwaysOneHalf() { return 0.5; }

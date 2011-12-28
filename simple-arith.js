@@ -464,3 +464,38 @@ SNat.prototype.lcm = function(s) {
 
   return this.div(this.gcd(s)).times(s);
 };
+
+// Returns the floor of the logarithm base 2 of this object as a
+// double.  Returns -Infinity of this object equals 0.  The return
+// value fits in 36 bits and thus is represented exactly by a double,
+// but not necessarily a uint32.
+SNat.prototype.floorLg = function() {
+  if (this.isZero()) {
+    return -Infinity;
+  }
+  // floorLg may be either an underestimate (if this is a small power
+  // of 2) or an overestimate (if this is slightly less than a large
+  // power of 2).
+  var floorLg = Math.floor(this.ln() * Math.LOG2E);
+
+  // Invariant: m = 2^floorLg.
+  var m = (new SNat(2)).pow(floorLg);
+  // Make sure this is >= m.
+  while (m.gt(this)) {
+    m = m.div(2);
+    --floorLg;
+  }
+
+  // Invariant: n = 2^{floorLg+1}.
+  var n = m.times(2);
+  // Make sure this is < n.
+  while (n.le(this)) {
+    n = n.times(2);
+    ++floorLg;
+  }
+
+  // Here we know m = 2^floorLg <= this < n = 2^{floorLg+1}, and
+  // therefore floorLg is the largest integer <= lg(n), i.e. floorLg =
+  // floor(lg(n)).
+  return floorLg;
+};
