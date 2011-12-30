@@ -82,6 +82,19 @@ SNat.cast = function(o) {
   return (o instanceof SNat) ? o : new SNat(o);
 };
 
+// Like SNat.cast, but returns null instead of throwing an exception
+// if the given object could not be parsed as an SNat.
+SNat.tryCast = function(o) {
+  try {
+    return SNat.cast(o);
+  } catch (e) {
+    if (e instanceof Error && /^cannot parse /.test(e.message)) {
+      return null;
+    }
+    throw e;
+  }
+};
+
 // Our base.
 SNat.prototype.b_ = 10;
 

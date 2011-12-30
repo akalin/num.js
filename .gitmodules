@@ -4,3 +4,6 @@
 [submodule "benchmark.js"]
 	path = benchmark.js
 	url = https://github.com/bestiejs/benchmark.js.git
+[submodule "knockout"]
+	path = knockout
+	url = https://github.com/SteveSanderson/knockout.git
