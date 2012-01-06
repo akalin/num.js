@@ -439,3 +439,21 @@ SNat.prototype.ln = function() {
   var e = s.length;
   return Math.log(m) + e * Math.LN10;
 };
+
+// Returns the greatest common divisor of this and s.
+SNat.prototype.gcd = function(s) {
+  s = this.constructor.cast(s);
+
+  if (this.isZero() || s.isZero()) {
+    throw new Error('gcd with zero');
+  }
+
+  var a = this;
+  var b = s;
+  while (b.isNonZero()) {
+    var t = b;
+    b = a.mod(b);
+    a = t;
+  }
+  return a;
+};

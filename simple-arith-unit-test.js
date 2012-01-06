@@ -531,6 +531,31 @@ describe('SNat', function() {
     });
   });
 
+  describe('gcd', function() {
+    it('zero', function() {
+      expect(function() { (new SNat(0)).gcd(1); }).toThrow('gcd with zero');
+      expect(function() { (new SNat(1)).gcd(0); }).toThrow('gcd with zero');
+    });
+
+    it('one', function() {
+      expect((new SNat(1)).gcd(5)).toEq(1);
+      expect((new SNat(1)).gcd(100)).toEq(1);
+      expect((new SNat(5)).gcd(1)).toEq(1);
+      expect((new SNat(100)).gcd(11)).toEq(1);
+    });
+
+    it('coprime', function() {
+      expect((new SNat(3)).gcd(5)).toEq(1);
+      expect((new SNat(5)).gcd(7)).toEq(1);
+      expect((new SNat(7)).gcd(1)).toEq(1);
+    });
+
+    it('non-trivial gcd', function() {
+      expect((new SNat(6)).gcd(9)).toEq(3);
+      expect((new SNat(121)).gcd(110)).toEq(11);
+    });
+  });
+
   describe('random', function() {
     function alwaysZero() { return 0.0; }
     function alwaysOneHalf() { return 0.5; }
