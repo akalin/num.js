@@ -499,3 +499,18 @@ SNat.prototype.floorLg = function() {
   // floor(lg(n)).
   return floorLg;
 };
+
+// Returns the ceil of the logarithm base 2 of this object as a
+// double.  Returns -Infinity of this object equals 0.  The return
+// value fits in 36 bits and thus is represented exactly by a double,
+// but not necessarily a uint32.
+SNat.prototype.ceilLg = function() {
+  if (this.isZero()) {
+    return -Infinity;
+  }
+  var ceilLg = this.floorLg();
+  if ((new SNat(2)).pow(ceilLg).lt(this)) {
+    ++ceilLg;
+  }
+  return ceilLg;
+};

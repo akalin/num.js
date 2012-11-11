@@ -609,128 +609,32 @@ describe('SNat', function() {
     });
   });
 
-  describe('random', function() {
-    function alwaysZero() { return 0.0; }
-    function alwaysOneHalf() { return 0.5; }
-    function alwaysOneMinusEpsilon() { return 1.0 - 2e-16; }
-    function alwaysOne() { return 1.0; }
-
-    var googol = (new SNat(10)).pow(100);
-
-    it('alwaysZero', function() {
-      function random(min, max) {
-        return SNat.random(min, max, alwaysZero);
-      }
-      expect(random(1, 100)).toEq('1');
-      expect(random(2, 1000)).toEq('2');
-      expect(random(3, 10000)).toEq('3');
-      expect(random(4, googol)).toEq('4');
+  describe('ceilLg', function() {
+    it('zero', function() {
+      expect((new SNat(0)).ceilLg()).toEqual(-Infinity);
     });
 
-    it('alwaysOneHalf', function() {
-      function random(min, max) {
-        return SNat.random(min, max, alwaysOneHalf);
-      }
-      expect(random(5, 100)).toEq('52');
-      expect(random(6, 1000)).toEq('503');
-      expect(random(7, 10000)).toEq('5003');
-      var googolLB = googol.div(2);
-      var googolUB = googolLB.plus((new SNat(10)).pow(91));
-      expect(random(8, googol)).toGt(googolLB);
-      expect(random(9, googol)).toLt(googolUB);
+    it('one', function() {
+      expect((new SNat(1)).ceilLg()).toEqual(0);
     });
 
-    it('alwaysOneMinusEpsilon', function() {
-      function random(min, max) {
-        return SNat.random(min, max, alwaysOneMinusEpsilon);
-      }
-      expect(random(10, 100)).toEq('99');
-      expect(random(11, 1000)).toEq('999');
-      expect(random(12, 10000)).toEq('9999');
-      expect(random(13, googol)).toEq(googol.minus(1));
-    });
-
-    it('alwaysOne', function() {
-      function random(min, max) {
-        return SNat.random(min, max, alwaysOne);
-      }
-      expect(random(14, 100)).toEq('14');
-      expect(random(15, 1000)).toEq('15');
-      expect(random(16, 10000)).toEq('16');
-      expect(random(17, googol)).toEq('17');
-    });
-
-    it('default', function() {
-      var a = SNat.random(18, 100);
-      var b = SNat.random(19, 1000);
-      var c = SNat.random(20, 10000);
-      var d = SNat.random(21, googol);
-      expect(a.ge(18)).toBeTruthy();
-      expect(a.lt(100)).toBeTruthy();
-      expect(b.ge(19)).toBeTruthy();
-      expect(b.lt(1000)).toBeTruthy();
-      expect(c.ge(20)).toBeTruthy();
-      expect(c.lt(10000)).toBeTruthy();
-      expect(d.ge(21)).toBeTruthy();
-      expect(d.lt(googol)).toBeTruthy();
-    });
-
-    it('error', function() {
-      expect(function() { SNat.random(0, 0, alwaysZero) })
-        .toThrow('invalid range [0, 0)');
-      expect(function() { SNat.random(5, 5, alwaysZero) })
-        .toThrow('invalid range [5, 5)');
-      expect(function() { SNat.random(10, 5, alwaysZero) })
-        .toThrow('invalid range [10, 5)');
-    });
-  });
-
-  describe('rsa', function() {
-    it('mult', function() {
-      for (var i in rsa) {
-        var f1 = new SNat(rsa[i][0]);
-        var f2 = new SNat(rsa[i][1]);
-        expect(f1.times(f2)).toEq(rsa[i][2]);
-      }
-    });
-
-    it('div', function() {
-      for (var i in rsa) {
-        var s = new SNat(rsa[i][2]);
-        expect(s.div(rsa[i][0])).toEq(rsa[i][1]);
-        expect(s.div(rsa[i][1])).toEq(rsa[i][0]);
-      }
-    });
-
-    it('mod', function() {
-      for (var i in rsa) {
-        var s = new SNat(rsa[i][2]);
-        expect(s.mod(rsa[i][0])).toEq(0);
-        expect(s.mod(rsa[i][1])).toEq(0);
-      }
-    });
-  });
-
-  describe('primes', function() {
-    it('Witnesses (small primes)', function() {
-      // More than this is slow.
-      for (var i = 0; i < 10; ++i) {
-        for (var j = 1; j < i; ++j) {
-          expect(hasFermatWitness(smallPrimes[i], smallPrimes[j]))
-            .toBeFalsy();
-          expect(hasArtjuhovWitness(smallPrimes[i], smallPrimes[j]))
-            .toBeFalsy();
+    it('uint powers of 2', function() {
+      for (var i = 1; i < 31; ++i) {
+        var n = (1 << i) >>> 0;
+        if (n > 2) {
+          expect((new SNat(n-1)).ceilLg()).toEqual(i);
         }
+        expect((new SNat(n)).ceilLg()).toEqual(i);
+        expect((new SNat(n+1)).ceilLg()).toEqual(i+1);
       }
     });
 
-    it('Witnesses (Mersenne primes)', function() {
-      var p = (new SNat(2)).pow(mersenneExponents[4]).minus(1);
-      // More than this is slow.
-      for (var j = 0; j < 10; ++j) {
-        var q = new SNat(smallPrimes[j]);
-        expect(hasFermatWitness(p, smallPrimes[j])).toBeFalsy();
-        expect(hasArtjuhovWitness(p, smallPrimes[j])).toBeFalsy();
+    it('large powers of 2', function() {
+      for (var i = 32; i < 100; ++i) {
+        var n = (new SNat(2)).pow(i);
+        expect(n.minus(1).ceilLg()).toEqual(i);
+        expect(n.ceilLg()).toEqual(i);
+        expect(n.plus(1).ceilLg()).toEqual(i+1);
       }
     });
   });
