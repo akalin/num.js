@@ -16,3 +16,28 @@ function calculateMultiplicativeOrderNaive(a, n) {
 
   return o;
 }
+
+// Assuming that a and p^k are coprime, returns the smallest power e
+// of a such that a^e = 1 (mod p^k).  For each prime factor of p-1,
+// takes O(lg^4 p / lg lg p) time.
+function calculateMultiplicativeOrderPrimePower(a, p, k, factorizer) {
+  a = SNat.cast(a);
+  p = SNat.cast(p);
+  k = SNat.cast(k);
+  factorizer = factorizer || defaultFactorizer;
+
+  var n = p.pow(k);
+
+  var t = calculateEulerPhiPrimePower(p, k);
+
+  var o = new SNat(1);
+  factorizer(t, function(q, e) {
+    var x = a.powMod(t.div(q.pow(e)), n);
+    while (x.ne(1)) {
+      o = o.times(q);
+      x = x.powMod(q, n);
+    }
+    return true;
+  });
+  return o;
+}
