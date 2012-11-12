@@ -7,6 +7,10 @@ function makeMultiplicativeOrderSuite(o, outputFn) {
     calculateMultiplicativeOrderNaive(2, o);
   });
 
+  suite.add('calculateMultiplicativeOrderPrimePower', function() {
+    calculateMultiplicativeOrderPrimePower(2, o, 1);
+  });
+
   var os = o.toString();
   suite.on('start', function() {
     outputFn(os + ': start');
