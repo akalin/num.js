@@ -47,3 +47,16 @@ function calculateMultiplicativeOrderPrimePower(a, p, k, factorizer) {
 
   return o;
 }
+
+function calculateMultiplicativeOrderCRT(a, n, factorizer) {
+  a = SNat.cast(a);
+  n = SNat.cast(n);
+  factorizer = factorizer || defaultFactorizer;
+
+  var o = new SNat(1);
+  factorizer(n, function(p, k) {
+    o = o.lcm(calculateMultiplicativeOrderPrimePower(a, p, k, factorizer));
+    return true;
+  });
+  return o;
+}

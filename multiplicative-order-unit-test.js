@@ -30,4 +30,21 @@ describe('multiplicative order', function() {
         calculateMultiplicativeOrderPrimePower(3, 2, 10)).toEq(256);
     });
   });
+
+  describe('getMultiplicativeOrderCRT', function() {
+    it('small', function() {
+      expect(
+        calculateMultiplicativeOrderCRT(4, 7)).toEq(3);
+    });
+
+    it('large', function() {
+      expect(
+        calculateMultiplicativeOrderCRT(3, 1024)).toEq(256);
+    });
+
+    it('multiple prime factors', function() {
+      expect(
+        calculateMultiplicativeOrderCRT(3, 25600)).toEq(1280);
+    });
+  });
 });
