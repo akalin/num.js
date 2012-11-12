@@ -31,13 +31,19 @@ function calculateMultiplicativeOrderPrimePower(a, p, k, factorizer) {
   var t = calculateEulerPhiPrimePower(p, k);
 
   var o = new SNat(1);
-  factorizer(t, function(q, e) {
+  function processPrimeFactor(q, e) {
     var x = a.powMod(t.div(q.pow(e)), n);
     while (x.ne(1)) {
       o = o.times(q);
       x = x.powMod(q, n);
     }
     return true;
-  });
+  };
+
+  if (k.gt(1)) {
+    processPrimeFactor(p, k.minus(1));
+  }
+  factorizer(p.minus(1), processPrimeFactor);
+
   return o;
 }
