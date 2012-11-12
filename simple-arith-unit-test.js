@@ -556,6 +556,31 @@ describe('SNat', function() {
     });
   });
 
+  describe('lcm', function() {
+    it('zero', function() {
+      expect(function() { (new SNat(0)).lcm(1); }).toThrow('gcd with zero');
+      expect(function() { (new SNat(1)).lcm(0); }).toThrow('gcd with zero');
+    });
+
+    it('one', function() {
+      expect((new SNat(1)).lcm(5)).toEq(5);
+      expect((new SNat(1)).lcm(100)).toEq(100);
+      expect((new SNat(5)).lcm(1)).toEq(5);
+      expect((new SNat(100)).lcm(1)).toEq(100);
+    });
+
+    it('coprime', function() {
+      expect((new SNat(3)).lcm(5)).toEq(15);
+      expect((new SNat(5)).lcm(7)).toEq(35);
+      expect((new SNat(7)).lcm(11)).toEq(77);
+    });
+
+    it('non-trivial lcm', function() {
+      expect((new SNat(6)).lcm(9)).toEq(18);
+      expect((new SNat(121)).lcm(110)).toEq(1210);
+    });
+  });
+
   describe('random', function() {
     function alwaysZero() { return 0.0; }
     function alwaysOneHalf() { return 0.5; }

@@ -457,3 +457,10 @@ SNat.prototype.gcd = function(s) {
   }
   return a;
 };
+
+// Returns the least common multiple of this and s.
+SNat.prototype.lcm = function(s) {
+  s = this.constructor.cast(s);
+
+  return this.div(this.gcd(s)).times(s);
+};
