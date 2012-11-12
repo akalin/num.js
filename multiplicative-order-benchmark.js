@@ -11,6 +11,10 @@ function makeMultiplicativeOrderSuite(o, outputFn) {
     calculateMultiplicativeOrderPrimePower(2, o, 1);
   });
 
+  suite.add('calculateMultiplicativeOrderCRT', function() {
+    calculateMultiplicativeOrderCRT(2, o);
+  });
+
   var os = o.toString();
   suite.on('start', function() {
     outputFn(os + ': start');

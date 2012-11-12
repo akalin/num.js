@@ -48,6 +48,8 @@ function calculateMultiplicativeOrderPrimePower(a, p, k, factorizer) {
   return o;
 }
 
+// Like calculateMultiplicativeOrderNaive(), but factorizes n and
+// calls calculateMultiplicativeOrderPrimePower() for each factor.
 function calculateMultiplicativeOrderCRT(a, n, factorizer) {
   a = SNat.cast(a);
   n = SNat.cast(n);
