@@ -27,6 +27,12 @@ describe('trial division', function() {
     return true;
   }
 
+  it('processPrimeFactor return value', function() {
+    expect(function() {
+      trialDivide(100, makeNaiveDivisorGenerator(), function() {});
+    }).toThrow('processPrimeFactor must return true or false');
+  });
+
   describe('naive', function() {
     function factorize(n) {
       var factors = [];

@@ -12,6 +12,12 @@
 // factor and its multiplicity.  If it returns a false value, it won't
 // be called anymore.
 function trialDivide(n, getNextDivisor, processPrimeFactor) {
+  function checkShouldContinue(shouldContinue) {
+    if (shouldContinue !== true && shouldContinue !== false) {
+      throw new Error('processPrimeFactor must return true or false');
+    }
+  }
+
   n = SNat.cast(n);
   if (n.isZero()) {
     return;
@@ -21,7 +27,8 @@ function trialDivide(n, getNextDivisor, processPrimeFactor) {
     var d = getNextDivisor(t);
     if (d == null) {
       if (t.ne(1)) {
-        processPrimeFactor(t, new SNat(1));
+        var shouldContinue = processPrimeFactor(t, new SNat(1));
+        checkShouldContinue(shouldContinue);
       }
       return;
     }
@@ -31,7 +38,9 @@ function trialDivide(n, getNextDivisor, processPrimeFactor) {
       e = e.plus(1);
     }
     if (e.isNonZero()) {
-      if (!processPrimeFactor(d, e)) {
+      var shouldContinue = processPrimeFactor(d, e);
+      checkShouldContinue(shouldContinue);
+      if (!shouldContinue) {
         return;
       }
     }
