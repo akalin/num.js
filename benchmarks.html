@@ -7,10 +7,12 @@
   <!-- include source files here... -->
   <script type="text/javascript" src="simple-arith.js"></script>
   <script type="text/javascript" src="trial-division.js"></script>
+  <script type="text/javascript" src="multiplicative-order.js"></script>
   <script type="text/javascript" src="primality-testing.js"></script>
 
   <!-- include benchmark files here... -->
   <script type="text/javascript" src="trial-division-benchmark.js"></script>
+  <script type="text/javascript" src="multiplicative-order-benchmark.js"></script>
   <script type="text/javascript" src="primality-testing-benchmark.js"></script>
 
 </head>
@@ -25,15 +27,25 @@ var outputFn = function(str) {
   outputPre.textContent += str + '\n';
 };
 
+var testModuli = [ '101', '1009', '10007' ];
+
+var multiplicativeOrderSuites = testModuli.map(function(o) {
+  return makeMultiplicativeOrderSuite(o, outputFn);
+});
+
 var testPrimes = ['100003', '10000019', '1000000007'];
 
-var suiteGenerators = [makeTrialDivideSuite, makePrimalityTestingSuite];
+var primeSuiteGenerators = [ makeTrialDivideSuite, makePrimalityTestingSuite ];
 
-var suites = suiteGenerators.map(function(suiteGenerator) {
+var primeSuites = primeSuiteGenerators.map(function(suiteGenerator) {
   return testPrimes.map(function(o) {
     return suiteGenerator(o, outputFn);
   })
 }).reduce(function(a, b) { return a.concat(b); });
+
+var suites = [];
+Array.prototype.push.apply(suites, multiplicativeOrderSuites);
+Array.prototype.push.apply(suites, primeSuites);
 
 var runSuites = function(i) {
   if (i >= suites.length) {
