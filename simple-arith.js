@@ -287,6 +287,16 @@ SNat.prototype.ge = function(s) {
   return this.cmp_(s) >= 0;
 };
 
+SNat.prototype.min = function(s) {
+  s = this.constructor.cast(s);
+  return this.le(s) ? this : s;
+}
+
+SNat.prototype.max = function(s) {
+  s = this.constructor.cast(s);
+  return this.ge(s) ? this : s;
+}
+
 SNat.prototype.isZero = function() {
   return this.a_.length == 0;
 }

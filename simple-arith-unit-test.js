@@ -214,6 +214,34 @@ describe('SNat', function() {
       expect(c).not.toGt(c);
     });
 
+    it('min', function() {
+      expect(a.min(a)).toEq(a);
+      expect(a.min(b)).toEq(b);
+      expect(a.min(c)).toEq(c);
+
+      expect(b.min(a)).toEq(b);
+      expect(b.min(b)).toEq(b);
+      expect(b.min(c)).toEq(b);
+
+      expect(c.min(a)).toEq(c);
+      expect(c.min(b)).toEq(b);
+      expect(c.min(c)).toEq(c);
+    });
+
+    it('max', function() {
+      expect(a.max(a)).toEq(a);
+      expect(a.max(b)).toEq(a);
+      expect(a.max(c)).toEq(a);
+
+      expect(b.max(a)).toEq(a);
+      expect(b.max(b)).toEq(b);
+      expect(b.max(c)).toEq(c);
+
+      expect(c.max(a)).toEq(a);
+      expect(c.max(b)).toEq(c);
+      expect(c.max(c)).toEq(c);
+    });
+
     it('conversions', function() {
       var s = a.toString();
       var n = 314159;
