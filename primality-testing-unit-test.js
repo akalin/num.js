@@ -203,5 +203,21 @@ describe('primality testing', function() {
         }
       });
     });
+
+    describe('calculateAKSUpperBoundSimple', function() {
+      it('small', function() {
+        expect(calculateAKSUpperBoundSimple(1, 2)).toEq(1);
+        expect(calculateAKSUpperBoundSimple(2, 3)).toEq(2);
+        expect(calculateAKSUpperBoundSimple(3, 7)).toEq(5);
+        expect(calculateAKSUpperBoundSimple(4, 11)).toEq(7);
+        expect(calculateAKSUpperBoundSimple(5, 17)).toEq(13);
+      });
+
+      it('powers of 2', function() {
+        expect(calculateAKSUpperBoundSimple(32, 29)).toEq(26);
+        expect(calculateAKSUpperBoundSimple(1024, 227)).toEq(151);
+        expect(calculateAKSUpperBoundSimple(32768, 227)).toEq(226);
+      });
+    });
   });
 });

@@ -263,3 +263,12 @@ function calculateAKSModulus(n, multiplicativeOrderCalculator) {
 
   throw new Error('Could not find AKS modulus');
 }
+
+// Returns floor(sqrt(r-1)) * ceil(lg(n)) + 1 > floor(sqrt(Phi(r))) * lg(n).
+function calculateAKSUpperBoundSimple(n, r) {
+  n = SNat.cast(n);
+  r = SNat.cast(r);
+
+  // Use r - 1 instead of calculating Phi(r).
+  return r.minus(1).floorRoot(2).times(n.ceilLg()).plus(1);
+}
