@@ -18,4 +18,14 @@ describe('Euler phi', function() {
       expect(calculateEulerPhiPrimePower(101, 3)).toEq(1020100);
     });
   });
+
+  describe('calculateEulerPhiGeneral', function() {
+    it('small', function() {
+      expect(calculateEulerPhi(128)).toEq(64);
+    });
+
+    it('multiple prime factors', function() {
+      expect(calculateEulerPhi(72)).toEq(24);
+    });
+  });
 });
