@@ -272,3 +272,14 @@ function calculateAKSUpperBoundSimple(n, r) {
   // Use r - 1 instead of calculating Phi(r).
   return r.minus(1).floorRoot(2).times(n.ceilLg()).plus(1);
 }
+
+// Calculates Phi(r) and returns
+// floor(sqrt(Phi(r))) * ceil(lg(n)) + 1 > floor(sqrt(Phi(r))) * lg(n).
+function calculateAKSUpperBound(n, r, factorizer) {
+  n = SNat.cast(n);
+  r = SNat.cast(r);
+  factorizer = factorizer || defaultFactorizer;
+
+  var phi = calculateEulerPhi(r, factorizer);
+  return phi.floorRoot(2).times(n.ceilLg()).plus(1);
+}

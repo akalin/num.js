@@ -219,5 +219,12 @@ describe('primality testing', function() {
         expect(calculateAKSUpperBoundSimple(32768, 227)).toEq(226);
       });
     });
+
+    describe('calculateAKSUpperBound', function() {
+      it('first different', function() {
+        expect(calculateAKSUpperBoundSimple(110, 81)).toEq(57);
+        expect(calculateAKSUpperBound(110, 81)).toEq(50);
+      });
+    });
   });
 });
