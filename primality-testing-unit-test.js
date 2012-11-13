@@ -5,6 +5,10 @@ describe('primality testing', function() {
     this.addMatchers({
       toEq: function(expected) {
         return this.actual.eq(expected);
+      },
+
+      toGt: function(expected) {
+        return this.actual.gt(expected);
       }
     });
   });
@@ -175,6 +179,29 @@ describe('primality testing', function() {
     it('small primes', function() {
       expect(smallOddPrimesGt5.filter(isPrimeByMiller)).
         toEqual(smallOddPrimesGt5);
+    });
+  });
+
+  describe('AKS', function() {
+    describe('calculateAKSModulus', function() {
+      it('small', function() {
+        expect(calculateAKSModulus(1)).toEq(2);
+        expect(calculateAKSModulus(2)).toEq(3);
+        expect(calculateAKSModulus(3)).toEq(7);
+        expect(calculateAKSModulus(4)).toEq(11);
+        expect(calculateAKSModulus(5)).toEq(17);
+      });
+
+      it('powers of 2', function() {
+        var ks = [ 5, 10, 15 ];
+        for (var i = 0; i < ks.length; ++i) {
+          var k = new SNat(ks[i]);
+          var n = (new SNat(2)).pow(k);
+          var r = calculateAKSModulus(n);
+          var o = calculateMultiplicativeOrderCRT(n, r);
+          expect(o).toGt(k.pow(2));
+        }
+      });
     });
   });
 });

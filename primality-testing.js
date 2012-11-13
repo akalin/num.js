@@ -239,3 +239,27 @@ function findProbablePrime(b, hasWitness, rng, numSamples) {
     }
   }
 }
+
+// Returns the least r such that o_r(n) > ceil(lg(n))^2 >= ceil(lg(n)^2).
+function calculateAKSModulus(n, multiplicativeOrderCalculator) {
+  n = SNat.cast(n);
+  multiplicativeOrderCalculator =
+    multiplicativeOrderCalculator || calculateMultiplicativeOrderCRT;
+
+  var ceilLgN = new SNat(n.ceilLg());
+  var ceilLgNSq = ceilLgN.pow(2);
+  var rLowerBound = ceilLgNSq.plus(2);
+  var rUpperBound = ceilLgN.pow(5).max(3);
+
+  for (var r = rLowerBound; r.le(rUpperBound); r = r.plus(1)) {
+    if (n.gcd(r).ne(1)) {
+      continue;
+    }
+    var o = multiplicativeOrderCalculator(n, r);
+    if (o.gt(ceilLgNSq)) {
+      return r;
+    }
+  }
+
+  throw new Error('Could not find AKS modulus');
+}
