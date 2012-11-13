@@ -87,3 +87,8 @@ function makeMod30WheelDivisorGenerator() {
     return d;
   };
 }
+
+// Provide a useful default factorizer.
+function defaultFactorizer(n, processPrimeFactor) {
+  trialDivide(n, makeMod30WheelDivisorGenerator(), processPrimeFactor);
+};
