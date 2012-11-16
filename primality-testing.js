@@ -283,3 +283,48 @@ function calculateAKSUpperBound(n, r, factorizer) {
   var phi = calculateEulerPhi(r, factorizer);
   return phi.floorRoot(2).times(n.ceilLg()).plus(1);
 }
+
+// The getAKSParameters* functions below return a parameters object
+// with the following fields:
+//
+//   n: the number the parameters are for.
+//
+//   factor: A prime factor of n.  If present, the fields below may
+//           not be present.
+//
+//   isPrime: if set, n is prime.  If present, the fields below may
+//            not be present.
+//
+//   r: the AKS modulus for n.
+//
+//   M: the AKS upper bound for n.
+
+function getAKSParametersSimple(n) {
+  n = SNat.cast(n);
+
+  var r = calculateAKSModulus(n);
+  var M = calculateAKSUpperBound(n, r);
+  var parameters = {
+    n: n,
+    r: r,
+    M: M
+  };
+
+  var generator = makeMod30WheelDivisorGenerator();
+  var boundedGenerator = function(n) {
+    var d = generator(n);
+    return (d && d.lt(M)) ? d : null;
+  };
+  trialDivide(n, boundedGenerator, function(p, k) {
+    if (p.lt(M.min(n))) {
+      parameters.factor = p;
+    }
+    return false;
+  });
+
+  if (!parameters.factor && M.gt(n.floorRoot(2))) {
+    parameters.isPrime = true;
+  }
+
+  return parameters;
+}
