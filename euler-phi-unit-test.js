@@ -28,4 +28,14 @@ describe('Euler phi', function() {
       expect(calculateEulerPhi(72)).toEq(24);
     });
   });
+
+  describe('calculateEulerPhiFactors', function() {
+    it('small', function() {
+      expect(calculateEulerPhiFactors(getFactors(128))).toEq(64);
+    });
+
+    it('multiple prime factors', function() {
+      expect(calculateEulerPhiFactors(getFactors(72))).toEq(24);
+    });
+  });
 });

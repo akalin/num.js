@@ -20,3 +20,15 @@ function calculateEulerPhi(n, factorizer) {
   });
   return eulerPhi;
 }
+
+// Calculates Phi(n) given its factors.
+function calculateEulerPhiFactors(factors) {
+  var eulerPhi = new SNat(1);
+  for (var i = 0; i < factors.length; ++i) {
+    var factor = factors[i];
+    var p = factor.p;
+    var k = factor.k;
+    eulerPhi = eulerPhi.times(calculateEulerPhiPrimePower(p, k));
+  }
+  return eulerPhi;
+}
