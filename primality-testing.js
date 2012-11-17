@@ -349,3 +349,47 @@ function getAKSParametersSimple(n) {
 
   return parameters;
 }
+
+function getAKSParameters(n, factorizer) {
+  n = SNat.cast(n);
+  factorizer = factorizer || defaultFactorizer;
+
+  var ceilLgN = new SNat(n.ceilLg());
+  var ceilLgNSq = ceilLgN.pow(2);
+  var floorSqrtN = n.floorRoot(2);
+
+  var rLowerBound = ceilLgNSq.plus(2);
+  var rUpperBound = ceilLgN.pow(5).max(3).min(floorSqrtN);
+
+  var parameters = {
+    n: n
+  };
+
+  var factor = getFirstFactorBelow(n, rLowerBound);
+  if (factor) {
+    parameters.factor = factor;
+    return parameters;
+  }
+
+  for (var r = rLowerBound; r.le(rUpperBound); r = r.plus(1)) {
+    if (n.mod(r).isZero()) {
+      parameters.factor = d;
+      return parameters;
+    }
+
+    var rFactors = getFactors(r, factorizer);
+    var o = calculateMultiplicativeOrderCRTFactors(n, rFactors, factorizer);
+    if (o.gt(ceilLgNSq)) {
+      parameters.r = r;
+      parameters.M = calculateAKSUpperBoundFactors(n, rFactors);
+      return parameters;
+    }
+  }
+
+  if (rUpperBound.eq(floorSqrtN)) {
+    parameters.isPrime = true;
+    return parameters;
+  }
+
+  throw new Error('Could not find AKS modulus');
+}

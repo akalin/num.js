@@ -276,5 +276,32 @@ describe('primality testing', function() {
         expect(parameters.M).toEq(290);
       });
     });
+
+    describe('getAKSParameters', function() {
+      it('2', function() {
+        var parameters = getAKSParameters(2);
+        expect(parameters.n).toEq(2);
+        expect(parameters.isPrime).toBeTruthy();
+      });
+
+      it('3', function() {
+        var parameters = getAKSParameters(3);
+        expect(parameters.n).toEq(3);
+        expect(parameters.isPrime).toBeTruthy();
+      });
+
+      it('4', function() {
+        var parameters = getAKSParameters(4);
+        expect(parameters.n).toEq(4);
+        expect(parameters.factor).toEq(2);
+      });
+
+      it('100003', function() {
+        var parameters = getAKSParameters(100003);
+        expect(parameters.n).toEq(100003);
+        expect(parameters.r).toEq(311);
+        expect(parameters.M).toEq(290);
+      });
+    });
   });
 });
