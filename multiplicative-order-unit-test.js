@@ -47,4 +47,38 @@ describe('multiplicative order', function() {
         calculateMultiplicativeOrderCRT(3, 25600)).toEq(1280);
     });
   });
+
+  function appendFactor(p, e) {
+    this.push({
+      p: p,
+      k: e
+    });
+    return true;
+  }
+
+  function factorize(o) {
+    var factors = [];
+    trialDivide(o, makeMod30WheelDivisorGenerator(),
+                appendFactor.bind(factors));
+    return factors;
+  }
+
+  describe('getMultiplicativeOrderCRTFactors', function() {
+    it('small', function() {
+      expect(
+        calculateMultiplicativeOrderCRTFactors(4, factorize(7))).toEq(3);
+    });
+
+    it('large', function() {
+      expect(
+        calculateMultiplicativeOrderCRTFactors(3, factorize(1024)))
+        .toEq(256);
+    });
+
+    it('multiple prime factors', function() {
+      expect(
+        calculateMultiplicativeOrderCRTFactors(3, factorize(25600)))
+        .toEq(1280);
+    });
+  });
 });

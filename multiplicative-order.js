@@ -62,3 +62,17 @@ function calculateMultiplicativeOrderCRT(a, n, factorizer) {
   });
   return o;
 }
+
+// Like calculateMultiplicativeOrderCRT(), but takes a list of factors.
+function calculateMultiplicativeOrderCRTFactors(a, factors, factorizer) {
+  a = SNat.cast(a);
+
+  var o = new SNat(1);
+  for (var i = 0 ; i < factors.length; ++i) {
+    var factor = factors[i];
+    var p = factor.p;
+    var k = factor.k;
+    o = o.lcm(calculateMultiplicativeOrderPrimePower(a, p, k, factorizer));
+  }
+  return o;
+}
