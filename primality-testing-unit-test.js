@@ -303,5 +303,39 @@ describe('primality testing', function() {
         expect(parameters.M).toEq(290);
       });
     });
+
+    describe('isAKSWitness', function() {
+      it('prime', function() {
+        var parameters = getAKSParametersSimple(23);
+        expect(isAKSWitness(parameters.n, parameters.r, 1)).toBeFalsy();
+      });
+
+      it('composite', function() {
+        var parameters = getAKSParametersSimple(25);
+        expect(isAKSWitness(parameters.n, parameters.r, 1)).toBeTruthy();
+      });
+    });
+
+    describe('getFirstAKSWitness', function() {
+      it('prime', function() {
+        var parameters = getAKSParametersSimple(23);
+        expect(getFirstAKSWitness(parameters.n, parameters.r, parameters.M))
+          .toEqual(null);
+      });
+
+      it('composite', function() {
+        var parameters = getAKSParametersSimple(25);
+        expect(getFirstAKSWitness(parameters.n, parameters.r, parameters.M))
+          .toEq(1);
+      });
+    });
+
+    describe('isPrimeByAKS', function() {
+      var smallOddPrimesGt5 = smallPrimes.slice(2);
+      it('small primes', function() {
+        expect(smallOddPrimesGt5.filter(isPrimeByAKS)).
+          toEqual(smallOddPrimesGt5);
+      });
+    });
   });
 });

@@ -393,3 +393,54 @@ function getAKSParameters(n, factorizer) {
 
   throw new Error('Could not find AKS modulus');
 }
+
+// Returns whether (X + a)^n = X^n + a mod (X^r - 1, n).
+function isAKSWitness(n, r, a) {
+  n = SNat.cast(n);
+  r = SNat.cast(r);
+  a = SNat.cast(a);
+
+  function reduceAKS(p) {
+    return p.modPow(r).mod(n);
+  }
+
+  function prodAKS(x, y) {
+    return reduceAKS(x.times(y));
+  };
+
+  var one = new SPoly(new SNat(1));
+  var xn = one.shiftLeft(n.mod(r));
+  var ap = new SPoly(a);
+  var lhs = one.shiftLeft(1).plus(ap).pow(n, prodAKS);
+  var rhs = reduceAKS(one.shiftLeft(n).plus(ap));
+  return lhs.ne(rhs);
+}
+
+// Returns the first a < M that is an AKS witness for n, or null if
+// there isn't one.
+function getFirstAKSWitness(n, r, M) {
+  n = SNat.cast(n);
+  r = SNat.cast(r);
+  M = SNat.cast(M);
+
+  for (var a = new SNat(1); a.lt(M); a = a.plus(1)) {
+    if (isAKSWitness(n, r, a)) {
+      return a;
+    }
+  }
+  return null;
+}
+
+// Returns whether n is prime or not using the AKS primality test.
+function isPrimeByAKS(n) {
+  n = SNat.cast(n);
+
+  var parameters = getAKSParameters(n);
+  if (parameters.factor) {
+    return false;
+  }
+  if (parameters.isPrime) {
+    return true;
+  }
+  return (getFirstAKSWitness(n, parameters.r, parameters.M) == null);
+}
