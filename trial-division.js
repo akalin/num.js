@@ -92,3 +92,21 @@ function makeMod30WheelDivisorGenerator() {
 function defaultFactorizer(n, processPrimeFactor) {
   trialDivide(n, makeMod30WheelDivisorGenerator(), processPrimeFactor);
 };
+
+// Returns a list of factors of n, which are objects with the fields:
+//
+//   p: a prime factor
+//   k: p's multiplicity
+function getFactors(n, factorizer) {
+  n = SNat.cast(n);
+  factorizer = factorizer || defaultFactorizer;
+  var factors = [];
+  factorizer(n, function(p, k) {
+    factors.push({
+      p: p,
+      k: k
+    });
+    return true;
+  });
+  return factors;
+}

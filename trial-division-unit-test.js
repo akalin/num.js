@@ -9,11 +9,11 @@ describe('trial division', function() {
           return false;
         }
         for (var i = 0; i < l; ++i) {
-          var p = this.actual[i][0];
-          var e = this.actual[i][1]
+          var p = this.actual[i].p;
+          var k = this.actual[i].k
           var expectedP = expected[i][0];
-          var expectedE = expected[i][1];
-          if (p.ne(expectedP) || e.ne(expectedE)) {
+          var expectedK = expected[i][1];
+          if (p.ne(expectedP) || k.ne(expectedK)) {
             return false;
           }
         }
@@ -21,11 +21,6 @@ describe('trial division', function() {
       }
     });
   });
-
-  function appendFactor(p, e) {
-    this.push([p, e]);
-    return true;
-  }
 
   it('processPrimeFactor return value', function() {
     expect(function() {
@@ -35,11 +30,10 @@ describe('trial division', function() {
 
   describe('naive', function() {
     function factorize(n) {
-      var factors = [];
-      trialDivide(n, makeNaiveDivisorGenerator(),
-                  appendFactor.bind(factors));
-      return factors;
-    }
+      return getFactors(n, function(m, processPrimeFactor) {
+        trialDivide(n, makeNaiveDivisorGenerator(), processPrimeFactor);
+      });
+    };
 
     it('trivial', function() {
       expect(factorize(0)).toEqFactorList([]);
@@ -71,12 +65,11 @@ describe('trial division', function() {
   });
 
   describe('mod30WheelDivisor', function() {
-    function factorize(o) {
-      var factors = [];
-      trialDivide(o, makeMod30WheelDivisorGenerator(),
-                  appendFactor.bind(factors));
-      return factors;
-    }
+    function factorize(n) {
+      return getFactors(n, function(m, processPrimeFactor) {
+        trialDivide(n, makeMod30WheelDivisorGenerator(), processPrimeFactor);
+      });
+    };
 
     it('trivial', function() {
       expect(factorize(0)).toEqFactorList([]);
@@ -108,11 +101,9 @@ describe('trial division', function() {
   });
 
   describe('default factorizer', function() {
-    function factorize(o) {
-      var factors = [];
-      defaultFactorizer(o, appendFactor.bind(factors));
-      return factors;
-    }
+    function factorize(n) {
+      return getFactors(n);
+    };
 
     it('trivial', function() {
       expect(factorize(0)).toEqFactorList([]);
