@@ -284,6 +284,15 @@ function calculateAKSUpperBound(n, r, factorizer) {
   return phi.floorRoot(2).times(n.ceilLg()).plus(1);
 }
 
+// Calculates Phi(r) from its factors and returns
+// floor(sqrt(Phi(r))) * ceil(lg(n)) + 1 > floor(sqrt(Phi(r))) * lg(n).
+function calculateAKSUpperBoundFactors(n, rFactors) {
+  n = SNat.cast(n);
+
+  var phi = calculateEulerPhiFactors(rFactors);
+  return phi.floorRoot(2).times(n.ceilLg()).plus(1);
+}
+
 // Returns the first factor of n < m from generator, or null if there
 // is no such factor.
 function getFirstFactorBelow(n, M, generator) {

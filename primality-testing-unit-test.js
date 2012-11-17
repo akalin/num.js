@@ -227,6 +227,12 @@ describe('primality testing', function() {
       });
     });
 
+    describe('calculateAKSUpperBoundFactors', function() {
+      it('first different', function() {
+        expect(calculateAKSUpperBoundFactors(110, getFactors(81))).toEq(50);
+      });
+    });
+
     describe('getFirstFactorBelow', function() {
       it('prime', function() {
         for (var i = 0; i < smallPrimes.length; ++i) {
