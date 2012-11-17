@@ -227,6 +227,17 @@ describe('primality testing', function() {
       });
     });
 
+    describe('getFirstFactorBelow', function() {
+      it('prime', function() {
+        for (var i = 0; i < smallPrimes.length; ++i) {
+          var p = smallPrimes[i];
+          expect(getFirstFactorBelow(p, p)).toEqual(null);
+          expect(getFirstFactorBelow(p * p, p)).toEqual(null);
+          expect(getFirstFactorBelow(p * p, p + 1)).toEq(p);
+        }
+      });
+    });
+
     describe('getAKSParametersSimple', function() {
       it('2', function() {
         var parameters = getAKSParametersSimple(2);

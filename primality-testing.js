@@ -284,6 +284,27 @@ function calculateAKSUpperBound(n, r, factorizer) {
   return phi.floorRoot(2).times(n.ceilLg()).plus(1);
 }
 
+// Returns the first factor of n < m from generator, or null if there
+// is no such factor.
+function getFirstFactorBelow(n, M, generator) {
+  n = SNat.cast(n);
+  M = SNat.cast(M);
+  generator = generator || makeMod30WheelDivisorGenerator();
+
+  var boundedGenerator = function(n) {
+    var d = generator(n);
+    return (d && d.lt(M)) ? d : null;
+  };
+  var factor = null;
+  trialDivide(n, boundedGenerator, function(p, k) {
+    if (p.lt(M.min(n))) {
+      factor = p;
+    }
+    return false;
+  });
+  return factor;
+}
+
 // The getAKSParameters* functions below return a parameters object
 // with the following fields:
 //
@@ -310,19 +331,10 @@ function getAKSParametersSimple(n) {
     M: M
   };
 
-  var generator = makeMod30WheelDivisorGenerator();
-  var boundedGenerator = function(n) {
-    var d = generator(n);
-    return (d && d.lt(M)) ? d : null;
-  };
-  trialDivide(n, boundedGenerator, function(p, k) {
-    if (p.lt(M.min(n))) {
-      parameters.factor = p;
-    }
-    return false;
-  });
-
-  if (!parameters.factor && M.gt(n.floorRoot(2))) {
+  var factor = getFirstFactorBelow(n, M);
+  if (factor) {
+    parameters.factor = factor;
+  } else if (M.gt(n.floorRoot(2))) {
     parameters.isPrime = true;
   }
 
