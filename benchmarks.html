@@ -15,9 +15,13 @@
   <script type="text/javascript" src="trial-division-benchmark.js"></script>
   <script type="text/javascript" src="multiplicative-order-benchmark.js"></script>
   <script type="text/javascript" src="primality-testing-benchmark.js"></script>
+  <script type="text/javascript" src="polynomial-power-benchmark.js"></script>
 
 </head>
 <body>
+<input id="run-polynomial-power-benchmark"
+       type="button" value="Run polynomial power benchmark" />
+
 <input id="run-trial-division-benchmark"
        type="button" value="Run trial division benchmark" />
 
@@ -46,6 +50,14 @@ function runBenchmark(suites, i) {
   suite.on('complete', function() {
     runBenchmark(suites, i + 1);
   });
+};
+
+var runPolynomialPowerBenchmarkButton =
+    document.getElementById('run-polynomial-power-benchmark');
+
+runPolynomialPowerBenchmarkButton.onclick = function() {
+  outputPre.textContent = '';
+  runBenchmark(makePolynomialPowerBenchmark(outputFn), 0);
 };
 
 var runTrialDivisionBenchmarkButton =
