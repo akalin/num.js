@@ -698,11 +698,10 @@ SPoly.prototype.times = function(s) {
     var vj = v[j];
     var vn = vj[0];
     var vc = vj[1];
-    var uvj = this.shiftLeft(vn);
-    uvj.a_ = uvj.a_.map(function(term) {
-      return [term[0], term[1].times(vc)];
+    var uvja = this.a_.map(function(term) {
+      return [term[0].plus(vn), term[1].times(vc)];
     });
-    w = w.plus(uvj);
+    w = w.plus(this.constructor.new_(uvja));
   }
   return w;
 };
