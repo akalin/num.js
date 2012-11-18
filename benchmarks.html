@@ -18,6 +18,15 @@
 
 </head>
 <body>
+<input id="run-trial-division-benchmark"
+       type="button" value="Run trial division benchmark" />
+
+<input id="run-multiplicative-order-benchmark"
+       type="button" value="Run multiplicative order benchmark" />
+
+<input id="run-primality-testing-benchmark"
+       type="button" value="Run primality testing benchmark" />
+
 <pre id="output">
 </pre>
 <script type="text/javascript">
@@ -28,38 +37,40 @@ var outputFn = function(str) {
   outputPre.textContent += str + '\n';
 };
 
-var testModuli = [ '101', '1009', '10007' ];
-
-var multiplicativeOrderSuites = testModuli.map(function(o) {
-  return makeMultiplicativeOrderSuite(o, outputFn);
-});
-
-var testPrimes = ['100003', '10000019', '1000000007'];
-
-var primeSuiteGenerators = [ makeTrialDivideSuite, makePrimalityTestingSuite ];
-
-var primeSuites = primeSuiteGenerators.map(function(suiteGenerator) {
-  return testPrimes.map(function(o) {
-    return suiteGenerator(o, outputFn);
-  })
-}).reduce(function(a, b) { return a.concat(b); });
-
-var suites = [];
-Array.prototype.push.apply(suites, multiplicativeOrderSuites);
-Array.prototype.push.apply(suites, primeSuites);
-
-var runSuites = function(i) {
+function runBenchmark(suites, i) {
   if (i >= suites.length) {
     return;
   }
   var suite = suites[i];
   suite.run({ 'async': true });
   suite.on('complete', function() {
-    runSuites(i + 1);
+    runBenchmark(suites, i + 1);
   });
 };
 
-runSuites(0);
+var runTrialDivisionBenchmarkButton =
+    document.getElementById('run-trial-division-benchmark');
+
+runTrialDivisionBenchmarkButton.onclick = function() {
+  outputPre.textContent = '';
+  runBenchmark(makeTrialDivisionBenchmark(outputFn), 0);
+};
+
+var runMultiplicativeOrderBenchmarkButton =
+    document.getElementById('run-multiplicative-order-benchmark');
+
+runMultiplicativeOrderBenchmarkButton.onclick = function() {
+  outputPre.textContent = '';
+  runBenchmark(makeMultiplicativeOrderBenchmark(outputFn), 0);
+};
+
+var runPrimalityTestingBenchmarkButton =
+    document.getElementById('run-primality-testing-benchmark');
+
+runPrimalityTestingBenchmarkButton.onclick = function() {
+  outputPre.textContent = '';
+  runBenchmark(makePrimalityTestingBenchmark(outputFn), 0);
+};
 </script>
 </body>
 </html>

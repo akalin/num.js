@@ -1,6 +1,6 @@
 'use strict';
 
-function makeTrialDivideSuite(o, outputFn) {
+function makeTrialDivisionSuite(o, outputFn) {
   var suite = new Benchmark.Suite();
 
   var processPrimeFactor = function() {
@@ -26,4 +26,11 @@ function makeTrialDivideSuite(o, outputFn) {
   });
 
   return suite;
+}
+
+function makeTrialDivisionBenchmark(outputFn) {
+  var testPrimes = ['100003', '10000019', '1000000007'];
+  return testPrimes.map(function(o) {
+    return makeTrialDivisionSuite(o, outputFn);
+  });
 }

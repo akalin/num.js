@@ -28,3 +28,10 @@ function makeMultiplicativeOrderSuite(o, outputFn) {
 
   return suite;
 }
+
+function makeMultiplicativeOrderBenchmark(outputFn) {
+  var testModuli = [ '101', '1009', '10007' ];
+  return testModuli.map(function(o) {
+    return makeMultiplicativeOrderSuite(o, outputFn);
+  });
+}

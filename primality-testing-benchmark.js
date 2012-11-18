@@ -26,3 +26,10 @@ function makePrimalityTestingSuite(o, outputFn) {
 
   return suite;
 }
+
+function makePrimalityTestingBenchmark(outputFn) {
+  var testPrimes = ['100003', '10000019', '1000000007'];
+  return testPrimes.map(function(o) {
+    return makePrimalityTestingSuite(o, outputFn);
+  });
+}
