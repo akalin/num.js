@@ -240,6 +240,19 @@ function findProbablePrime(b, hasWitness, rng, numSamples) {
   }
 }
 
+// Returns an upper bound for r such that o_r(n) > ceil(lg(n))^2 that
+// is polylog in n.
+function calculateAKSModulusUpperBound(n) {
+  n = SNat.cast(n);
+  var ceilLgN = new SNat(n.ceilLg());
+  var rUpperBound = ceilLgN.pow(5).max(3);
+  var nMod8 = n.mod(8);
+  if (nMod8.eq(3) || nMod8.eq(5)) {
+    rUpperBound = rUpperBound.min(ceilLgN.pow(2).times(8));
+  }
+  return rUpperBound;
+}
+
 // Returns the least r such that o_r(n) > ceil(lg(n))^2 >= ceil(lg(n)^2).
 function calculateAKSModulus(n, multiplicativeOrderCalculator) {
   n = SNat.cast(n);
@@ -249,7 +262,7 @@ function calculateAKSModulus(n, multiplicativeOrderCalculator) {
   var ceilLgN = new SNat(n.ceilLg());
   var ceilLgNSq = ceilLgN.pow(2);
   var rLowerBound = ceilLgNSq.plus(2);
-  var rUpperBound = ceilLgN.pow(5).max(3);
+  var rUpperBound = calculateAKSModulusUpperBound(n);
 
   for (var r = rLowerBound; r.le(rUpperBound); r = r.plus(1)) {
     if (n.gcd(r).ne(1)) {
@@ -359,7 +372,7 @@ function getAKSParameters(n, factorizer) {
   var floorSqrtN = n.floorRoot(2);
 
   var rLowerBound = ceilLgNSq.plus(2);
-  var rUpperBound = ceilLgN.pow(5).max(3).min(floorSqrtN);
+  var rUpperBound = calculateAKSModulusUpperBound(n).min(floorSqrtN);
 
   var parameters = {
     n: n
