@@ -11,6 +11,8 @@
   <script type="text/javascript" src="simple-arith.js"></script>
   <script type="text/javascript" src="trial-division.js"></script>
   <script type="text/javascript" src="primality-testing.js"></script>
+  <script type="text/javascript" src="euler-phi.js"></script>
+  <script type="text/javascript" src="multiplicative-order.js"></script>
 </head>
 
 <body>
@@ -141,6 +143,53 @@
   </script>
 </p>
 <script type="text/javascript" src="artjuhov-example.js"></script>
+
+<p id="aksExample">
+  Let <var>n</var> =
+  <input data-bind="value: nStr, valueUpdate: 'afterkeydown'" size="6" />.
+  <!-- ko template: outputTemplate --><!-- /ko -->
+
+  <script type="text/html" id="aks.error.invalidN">
+    <var>n</var> is not a valid number.
+  </script>
+
+  <script type="text/html" id="aks.error.outOfBoundsN">
+    <var>n</var> must be greater than or equal to 2.
+  </script>
+
+  <script type="text/html" id="aks.success">
+    ceil(lg(<var>n</var>)) is <span data-bind="text: ceilLgN"></span>,
+    <var>r</var> = <span data-bind="text: r"></span> is the least
+    value such that o<sub><var>r</var></sub>(<var>n</var>) =
+    <span data-bind="text:
+    nOrder"></span> &gt; ceil(lg(<var>n</var>))<sup>2</sup>
+    = <span data-bind="text: ceilLgNSq"></span>,
+    &varphi;(<var>r</var>) = <span data-bind="text:
+    eulerPhiR"></span>, and
+    <var>M</var> = floor(&radic;&varphi;(<var>r</var>)) &sdot;
+    ceil(lg(<var>n</var>)) + 1 = <span data-bind="text: M"></span>
+    &gt; floor(&radic;&varphi;(<var>r</var>)) &sdot; lg(<var>n</var>).
+    <span data-bind="if: factor()">
+      <var>n</var> has a factor <span data-bind="text: factor"></span>
+      &lt; <var>M</var>, so therefore <var>n</var> is composite.
+    </span>
+    <span data-bind="if: isPrime()">
+      <var>n</var> has no factor &lt; <var>M</var> and <var>M</var>
+      &le; floor(&radic;<var>n</var>) = <span data-bind="text:
+      floorSqrtN"></span>, so therefore <var>n</var> is prime.
+    </span>
+    <span data-bind="if: !factor() && !isPrime()">
+      <var>n</var> has no factor &lt; <var>M</var> and <var>M</var>
+      &gt; floor(&radic;<var>n</var>) = <span data-bind="text:
+      floorSqrtN"></span>, so <var>n</var> is prime iff (<var>X</var>
+      + <var>a</var>)<sup><var>n</var></sup>
+      &equiv; <var>X</var><sup><var>n</var></sup> + <var>a</var>
+      (mod <var>X</var><sup><var>r</var></sup> - 1, <var>n</var>) for
+      0 &le; <var>a</var> &le; <var>M</var>.
+    </span>
+  </script>
+</p>
+<script type="text/javascript" src="aks-example.js"></script>
 
 </body>
 </html>
